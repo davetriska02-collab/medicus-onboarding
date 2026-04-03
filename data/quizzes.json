@@ -1,0 +1,1122 @@
+{
+  "HCA": [
+    {
+      "question": "When a patient arrives for their appointment, what is the quickest way to mark them as arrived in Medicus?",
+      "options": [
+        "Open the appointment in the Appointment Book and select 'Click here to mark them as arrived'",
+        "Go to the patient record, open the Admin tab and update the status manually",
+        "Send a Medicus Chat message to the clinician to confirm the patient has arrived",
+        "Right-click the appointment slot and select 'Set arrival status'"
+      ],
+      "correct": 0,
+      "explanation": "From the View Appointment Details slideover in the Appointment Book you can arrive a patient in one click using 'Click here to mark them as arrived'."
+    },
+    {
+      "question": "A patient calls to say they cannot attend their appointment. How do you mark it as a DNA (Did Not Attend) in Medicus?",
+      "options": [
+        "Delete the appointment from the diary",
+        "Open the appointment, select 'More actions' and choose 'Did not attend'",
+        "Move the appointment to a future date automatically",
+        "Send the patient a portal message asking them to rebook"
+      ],
+      "correct": 1,
+      "explanation": "The DNA status is set via 'More actions' within the appointment details. This preserves the appointment record and flags the non-attendance correctly."
+    },
+    {
+      "question": "Where does the patient banner appear in Medicus, and what key information does it display?",
+      "options": [
+        "It appears only on the homepage and shows today's appointments",
+        "It appears at the top of the patient record and shows name, DOB, NHS number, address and key clinical alerts",
+        "It appears in the task list and shows outstanding actions",
+        "It appears in the search results and shows the patient's GP"
+      ],
+      "correct": 1,
+      "explanation": "The patient banner is displayed at the top of every patient record screen, giving quick access to demographic details and clinical alerts such as allergies and warnings."
+    },
+    {
+      "question": "How do you add a new appointment to a clinical diary that is fully booked?",
+      "options": [
+        "You cannot add appointments to a full diary - the patient must call back",
+        "Use the 'Squeeze in' option within the diary to add an extra slot",
+        "Delete an existing appointment to free up space",
+        "Add the appointment to a different clinician's diary without asking them"
+      ],
+      "correct": 1,
+      "explanation": "Medicus allows you to 'squeeze in' an additional appointment to a fully booked diary slot when clinically necessary, without removing existing bookings."
+    },
+    {
+      "question": "Where can you record a patient's blood pressure reading in Medicus?",
+      "options": [
+        "Only in a consultation, which must be started by a clinician",
+        "In the patient record under the Observations section, accessible to HCAs",
+        "By sending a task to the GP asking them to record it",
+        "In the Appointments tab under 'Pre-appointment notes'"
+      ],
+      "correct": 1,
+      "explanation": "HCAs can record observations such as blood pressure directly in the patient record's Observations section without needing to open a full clinical consultation."
+    },
+    {
+      "question": "What should you do if you accidentally open the wrong patient's record?",
+      "options": [
+        "Close the browser tab and reopen Medicus",
+        "Close the patient record immediately without making any changes and open the correct patient",
+        "Log out and back in to clear the session",
+        "Document in the notes that the wrong record was opened"
+      ],
+      "correct": 1,
+      "explanation": "You should close the incorrect patient record immediately without making any changes. Medicus logs all access to patient records for audit purposes."
+    },
+    {
+      "question": "A patient has pressed the panic button in a clinical room. Where does this alert appear in Medicus?",
+      "options": [
+        "It sends an email to all staff",
+        "It appears as a prominent alert on the Medicus homepage for all logged-in users",
+        "It only notifies the practice manager",
+        "It sends a text message to the on-call GP"
+      ],
+      "correct": 1,
+      "explanation": "The Medicus panic button triggers a visible alert on the homepage for all currently logged-in users, enabling an immediate response from any available staff member."
+    },
+    {
+      "question": "How do you search for a patient in Medicus using their NHS number?",
+      "options": [
+        "NHS number search is not available - you must use surname and date of birth",
+        "Enter the NHS number in the patient search bar at the top of the screen",
+        "Go to Reports and run a patient lookup query",
+        "Use the Patient Registration section and browse the list"
+      ],
+      "correct": 1,
+      "explanation": "The global patient search bar in Medicus accepts NHS numbers, names, and dates of birth, making it the quickest way to locate a specific patient."
+    },
+    {
+      "question": "When recording a vaccination administered by the HCA in Medicus, which section of the patient record is used?",
+      "options": [
+        "The Prescribing section, as vaccinations are medications",
+        "The Vaccinations section within the patient record",
+        "The Consultation section, requiring a GP to co-sign",
+        "The Documents section, by uploading a paper record"
+      ],
+      "correct": 1,
+      "explanation": "Vaccinations are recorded directly in the dedicated Vaccinations section of the patient record, allowing HCAs to document immunisations without opening a full consultation."
+    },
+    {
+      "question": "A patient asks to book a telephone appointment with their regular GP. Where in Medicus do you do this?",
+      "options": [
+        "The patient must request this through the Patient Portal only",
+        "Use the Appointment Book, select the GP's diary, choose a telephone appointment slot and book it",
+        "Telephone appointments cannot be booked in Medicus - use a separate phone system",
+        "Send a task to the GP asking them to call the patient"
+      ],
+      "correct": 1,
+      "explanation": "Telephone appointments are booked in the same Appointment Book as face-to-face slots. You select the appropriate appointment type (telephone) when booking."
+    }
+  ],
+  "ANP": [
+    {
+      "question": "When creating a new consultation in Medicus, what is the first step?",
+      "options": [
+        "Open the patient record and select 'New Consultation' from the Consultations tab",
+        "Send a task to the GP to authorise the consultation",
+        "Open the Appointment Book and right-click the patient's slot",
+        "Navigate to Reports and start a new clinical entry"
+      ],
+      "correct": 0,
+      "explanation": "New consultations are initiated directly from the patient record by selecting 'New Consultation' in the Consultations tab, allowing the clinician to document the encounter immediately."
+    },
+    {
+      "question": "Which authentication method is required before issuing an electronic prescription via EPS in Medicus?",
+      "options": [
+        "Username and password only",
+        "NHS Smartcard (CIS2) authentication",
+        "A phone call to the pharmacy to confirm identity",
+        "Supervisor countersignature in the consultation notes"
+      ],
+      "correct": 1,
+      "explanation": "EPS prescriptions must be signed using NHS Smartcard (CIS2) authentication. Without a valid Smartcard session, electronic prescriptions cannot be issued to the NHS Spine."
+    },
+    {
+      "question": "Where in Medicus do you record a patient's allergy to penicillin?",
+      "options": [
+        "In the consultation notes as free text only",
+        "In the Allergies section of the patient record, which links to clinical warnings",
+        "In the Prescribing section when attempting to prescribe",
+        "By sending a task to the practice administrator"
+      ],
+      "correct": 1,
+      "explanation": "Allergies are recorded in the dedicated Allergies section of the patient record. This populates clinical warnings and is checked automatically when prescribing."
+    },
+    {
+      "question": "How do you add a SNOMED CT code to a consultation entry in Medicus?",
+      "options": [
+        "Type the free text and Medicus automatically assigns a SNOMED code",
+        "Use the code search within the consultation to find and select the appropriate SNOMED CT term",
+        "SNOMED coding is done separately by the administrator after the consultation",
+        "SNOMED CT is not used in Medicus - it uses ICD-10 codes"
+      ],
+      "correct": 1,
+      "explanation": "Medicus includes an integrated SNOMED CT code search within the consultation screen, allowing clinicians to search for and apply the correct clinical term directly."
+    },
+    {
+      "question": "When creating an NHS e-Referral (e-RS) from Medicus, what information must be included?",
+      "options": [
+        "Only the patient's name and the service required",
+        "Clinical reason for referral, relevant history, and the selected e-RS service and priority",
+        "A scanned letter approved by the GP partner",
+        "The patient's insurance details and consent form"
+      ],
+      "correct": 1,
+      "explanation": "e-RS referrals from Medicus require clinical details, the reason for referral, relevant history, and selection of the correct NHS e-RS service and priority level."
+    },
+    {
+      "question": "Where do you view and action investigation results returned to Medicus?",
+      "options": [
+        "They are emailed to the requesting clinician automatically",
+        "In the Investigations section of the patient record, where results are filed and can be actioned",
+        "In the Reporting module under 'Pending results'",
+        "Results are only visible in the lab system - Medicus does not display them"
+      ],
+      "correct": 1,
+      "explanation": "Returned investigation results appear in the Investigations section of the patient record. Clinicians can review, action, and add comments before filing them."
+    },
+    {
+      "question": "How do you issue a fit note (Med 3) in Medicus?",
+      "options": [
+        "Print a blank fit note template from the Documents section",
+        "Use the Fit Note function within the consultation or from the patient record to generate and sign a Med 3",
+        "Fit notes must be handwritten - Medicus does not support electronic fit notes",
+        "Ask the receptionist to generate one from the Admin module"
+      ],
+      "correct": 1,
+      "explanation": "Medicus includes a Fit Note generator that can be accessed within a consultation or from the patient record, allowing clinicians to create, customise and digitally sign a Med 3."
+    },
+    {
+      "question": "What is the purpose of the LTC (Long Term Condition) recall function in Medicus?",
+      "options": [
+        "It automatically books appointments for all patients",
+        "It identifies patients due for structured reviews based on their coded conditions and schedules recall actions",
+        "It sends prescriptions to patients without a consultation",
+        "It manages staff annual leave scheduling"
+      ],
+      "correct": 1,
+      "explanation": "The LTC recall module identifies patients due for condition-specific structured reviews, helping practices manage ongoing care for conditions such as diabetes, hypertension, and asthma."
+    },
+    {
+      "question": "How do you update a consultation that was created in error with the wrong date?",
+      "options": [
+        "Delete the consultation and create a new one with the correct date",
+        "Use the retrospective consultation feature to create or amend a consultation entry for the correct date",
+        "Add a correction note to the existing consultation without changing the date",
+        "Contact Medicus support to correct the database record"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports retrospective consultation entries, allowing clinicians to create or amend consultation records for a past date when documenting care that occurred outside normal workflow."
+    },
+    {
+      "question": "When requesting a blood test for a patient in Medicus, how is the request transmitted to the laboratory?",
+      "options": [
+        "Print a paper request form and give it to the patient",
+        "The investigation request is sent electronically via the integrated laboratory requesting system",
+        "Email the laboratory directly with the patient details",
+        "Telephone the laboratory and provide the patient's NHS number"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports electronic investigation requesting, transmitting test requests directly to the integrated laboratory system. This reduces paper use and speeds up result return."
+    }
+  ],
+  "Nurse": [
+    {
+      "question": "When recording a patient's blood pressure in Medicus, which reading fields are required?",
+      "options": [
+        "Systolic only",
+        "Systolic and diastolic readings, plus the date and time of measurement",
+        "Systolic, diastolic, and the patient's weight",
+        "Diastolic only, as the systolic is calculated automatically"
+      ],
+      "correct": 1,
+      "explanation": "A complete blood pressure observation in Medicus records systolic and diastolic values along with date and time, ensuring an accurate clinical record for ongoing monitoring."
+    },
+    {
+      "question": "How do you record that a childhood immunisation has been administered to a patient in Medicus?",
+      "options": [
+        "Add a free-text note in the consultation",
+        "Open the Vaccinations section of the patient record and record the vaccine, batch number, site, and date",
+        "Send a task to the GP to document it on your behalf",
+        "Update the national immunisation register directly - Medicus does not store vaccination records"
+      ],
+      "correct": 1,
+      "explanation": "Vaccinations are documented in the Vaccinations section, capturing vaccine details, batch number, route, anatomical site, and date. This feeds into the patient's immunisation history."
+    },
+    {
+      "question": "A patient with diabetes is due their annual review. Where in Medicus do you find the structured review template?",
+      "options": [
+        "In the Documents module under 'Templates'",
+        "In the Consultations section when starting a new consultation - select the relevant LTC template",
+        "Structured review templates are not available in Medicus",
+        "In the Reporting module under 'QOF templates'"
+      ],
+      "correct": 1,
+      "explanation": "Medicus consultation templates include LTC structured review forms. When creating a new consultation, nurses can select the appropriate disease-specific template to guide the review."
+    },
+    {
+      "question": "How do you record a wound dressing procedure in a patient's Medicus record?",
+      "options": [
+        "Write a free-text note in the patient banner",
+        "Open a consultation and add the procedure with the appropriate SNOMED CT code and any relevant observations",
+        "Add it to the patient's task list",
+        "Record it in the Practice Administration module"
+      ],
+      "correct": 1,
+      "explanation": "Procedures including wound care are documented within a consultation entry using SNOMED CT codes to ensure the record is searchable and clinically coded correctly."
+    },
+    {
+      "question": "Where do you view a patient's complete immunisation history in Medicus?",
+      "options": [
+        "In the Consultation history, by scrolling through all past entries",
+        "In the Vaccinations section of the patient record, which shows all recorded immunisations",
+        "By running a report from the Reporting module",
+        "Immunisation history is only available via NHS Spine lookup"
+      ],
+      "correct": 1,
+      "explanation": "The Vaccinations section of the patient record provides a chronological view of all immunisations recorded in Medicus, including vaccine names, dates, batch numbers, and sites."
+    },
+    {
+      "question": "A patient's LTC recall is showing as overdue. How do you add a future review action to their record?",
+      "options": [
+        "Set a reminder in your personal diary",
+        "Use the Future Actions feature in the Care Record to schedule a recall action with a due date",
+        "Send a task to the receptionist to book an appointment",
+        "Overdue recalls resolve automatically when the patient books in"
+      ],
+      "correct": 1,
+      "explanation": "Future Actions in the Care Record allow clinicians to schedule patient-specific recall actions with target dates, supporting proactive management of long-term conditions."
+    },
+    {
+      "question": "An inbound letter from a hospital clinic has been scanned and uploaded to Medicus. Where do you find it?",
+      "options": [
+        "In the patient's task list",
+        "In the Documents section of the patient record, under inbound documents",
+        "In the Reporting module under 'Received correspondence'",
+        "In the Practice inbox - only administrators can access scanned letters"
+      ],
+      "correct": 1,
+      "explanation": "Scanned and electronically received documents appear in the Documents section of the patient record, where they can be reviewed, actioned, coded, and filed by clinical staff."
+    },
+    {
+      "question": "How do you start a new consultation in Medicus for a patient you have just seen for a blood test?",
+      "options": [
+        "Find the patient's appointment and click 'Start consultation' from the appointment view",
+        "Go to the patient record and select 'New Consultation' from the Consultations tab",
+        "Both A and B are valid routes into a new consultation",
+        "Nurses cannot create consultations - only GPs and ANPs can"
+      ],
+      "correct": 2,
+      "explanation": "A consultation can be started either from the Appointment Book (via the appointment) or directly from the patient record's Consultations tab - both are valid routes."
+    },
+    {
+      "question": "When completing a smear test in Medicus, what must be documented alongside the procedure code?",
+      "options": [
+        "Only the date is needed",
+        "The result or adequacy, the sample type, and any relevant clinical observations",
+        "A GP countersignature before saving",
+        "The patient's consent form number from the paper records"
+      ],
+      "correct": 1,
+      "explanation": "Cervical screening entries in Medicus require documentation of sample type, adequacy/result, and clinical findings alongside the SNOMED code to meet screening programme requirements."
+    },
+    {
+      "question": "A child is due their 12-month vaccinations. How do you check which vaccines are outstanding in Medicus?",
+      "options": [
+        "Call the child health department for the immunisation schedule",
+        "Review the Vaccinations section - Medicus shows the immunisation schedule and highlights outstanding vaccines based on age and history",
+        "Check the patient's paper Red Book",
+        "Run a QOF report to identify outstanding childhood immunisations"
+      ],
+      "correct": 1,
+      "explanation": "Medicus displays the childhood immunisation schedule against the patient's recorded vaccination history, clearly highlighting which vaccines are due or overdue based on their age."
+    }
+  ],
+  "Paramedic": [
+    {
+      "question": "As an independent prescribing paramedic, which authentication is required to issue an EPS prescription in Medicus?",
+      "options": [
+        "Username and password login only",
+        "NHS Smartcard (CIS2) authentication",
+        "Countersignature from a supervising GP",
+        "A separate prescribing PIN sent by the pharmacy"
+      ],
+      "correct": 1,
+      "explanation": "All EPS prescriptions in Medicus, including those issued by independent prescribers such as paramedics, require NHS Smartcard (CIS2) authentication to sign electronically."
+    },
+    {
+      "question": "Where do you document a patient assessment and clinical findings after a home visit in Medicus?",
+      "options": [
+        "In the Patient Portal so the patient can see the record",
+        "In the Consultations section of the patient record using a retrospective or same-day consultation entry",
+        "In the Task module as a clinical note",
+        "Email the GP surgery with the findings for them to document"
+      ],
+      "correct": 1,
+      "explanation": "Clinical findings from a home visit are documented as a consultation in the patient record. Medicus supports retrospective consultation entries for care documented after the event."
+    },
+    {
+      "question": "How do you access a patient's Summary Care Record (SCR) from within Medicus?",
+      "options": [
+        "SCR is not accessible from Medicus - use a separate NHS spine portal",
+        "Via the Care Record section of the patient record, which links to the SCR when CIS2 authentication is active",
+        "By phoning the patient's previous GP practice",
+        "Only the practice manager can access SCR data"
+      ],
+      "correct": 1,
+      "explanation": "Medicus integrates with NHS Spine to display the Summary Care Record within the patient record. Active CIS2 authentication is required to access SCR data."
+    },
+    {
+      "question": "A patient discloses a previously unrecorded allergy during assessment. How do you record this in Medicus?",
+      "options": [
+        "Add a free-text warning in the consultation notes only",
+        "Record it in the Allergies section of the patient record so it triggers clinical warnings during prescribing",
+        "Inform the receptionist who will update the record",
+        "Write it in the referral letter and let the hospital record it"
+      ],
+      "correct": 1,
+      "explanation": "New allergies must be recorded in the Allergies section of the patient record to ensure the information is flagged as a clinical warning and checked during any future prescribing."
+    },
+    {
+      "question": "When requesting an urgent investigation for a patient in Medicus, how do you flag it as urgent?",
+      "options": [
+        "Phone the laboratory directly to request urgency",
+        "Select the 'Urgent' priority option when creating the investigation request in Medicus",
+        "Add 'URGENT' in the notes field of a routine request",
+        "Only GPs can mark investigations as urgent"
+      ],
+      "correct": 1,
+      "explanation": "Medicus includes a priority selection when creating investigation requests, allowing clinicians to flag requests as urgent, which is transmitted to the laboratory as part of the electronic request."
+    },
+    {
+      "question": "How do you record medication you have administered to a patient during an emergency in Medicus?",
+      "options": [
+        "Record it as a new prescription in the Prescribing section",
+        "Document it within the consultation using the Medication Administration or Procedure fields with appropriate SNOMED coding",
+        "Email the GP to update the medication list",
+        "Administered medications are not recorded in Medicus - use a paper patient report form"
+      ],
+      "correct": 1,
+      "explanation": "Medications administered (as opposed to prescribed) are documented within the consultation record using appropriate SNOMED CT codes, keeping an accurate account of clinical interventions."
+    },
+    {
+      "question": "Where in Medicus do you find a patient's current medication list?",
+      "options": [
+        "Only in the most recent consultation note",
+        "In the Prescribing or Medications section of the patient record, showing active and repeat medications",
+        "In the Patient Portal - visible to patients but not clinicians in this view",
+        "By running a monthly prescribing report"
+      ],
+      "correct": 1,
+      "explanation": "The Prescribing/Medications section of the patient record displays active and repeat medications, providing an up-to-date overview for any clinician reviewing the patient."
+    },
+    {
+      "question": "You need to refer a patient to the acute medical unit following assessment. How is a referral created in Medicus?",
+      "options": [
+        "Phone the hospital directly - Medicus does not support referrals",
+        "Use the Referrals section or e-RS integration within Medicus to create a clinical referral with supporting information",
+        "Ask the GP to create the referral on your behalf",
+        "Create a task for the administrator to arrange the referral"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports referral creation directly, including NHS e-RS integration. Paramedics with appropriate access can create referrals containing clinical information from the assessment."
+    },
+    {
+      "question": "How do you view the clinical history and past consultations for a patient you have not seen before?",
+      "options": [
+        "Request a printed summary from reception",
+        "Open the patient record and review the Consultations tab which shows all past consultation entries",
+        "Access is restricted to the patient's registered GP only",
+        "Past consultations are only available if the patient has been seen in the last 12 months"
+      ],
+      "correct": 1,
+      "explanation": "The Consultations tab in the patient record provides a full chronological history of all consultations recorded in Medicus, accessible to any authorised clinical user."
+    },
+    {
+      "question": "After completing a home visit consultation in Medicus, what is the correct way to ensure the record is saved and available to the wider team?",
+      "options": [
+        "Close the browser - Medicus auto-saves everything",
+        "Finalise and save the consultation record; it then becomes visible to all authorised users in real time",
+        "Email the completed note to the practice inbox",
+        "The record is only saved after a GP reviews and countersigns it"
+      ],
+      "correct": 1,
+      "explanation": "Once a consultation is saved/finalised in Medicus, it is immediately accessible to all authorised team members, supporting continuity of care and real-time record keeping."
+    }
+  ],
+  "Pharmacist": [
+    {
+      "question": "When creating a new prescription in Medicus, which drug dictionary is used to select medications?",
+      "options": [
+        "BNF printed reference only",
+        "The dm+d (Dictionary of Medicines and Devices) integrated within Medicus",
+        "A custom practice formulary that must be built from scratch",
+        "Free-text entry only - no drug dictionary is integrated"
+      ],
+      "correct": 1,
+      "explanation": "Medicus uses the dm+d (Dictionary of Medicines and Devices) for prescribing, ensuring all medications are selected from an approved NHS drug dataset linked to EPS."
+    },
+    {
+      "question": "A patient submits a repeat prescription request via the Patient Portal. Where does this appear for the pharmacist to action?",
+      "options": [
+        "In the pharmacist's personal email inbox",
+        "In the Prescription Requests queue within Medicus, where it can be reviewed and approved or rejected",
+        "Directly in the Prescribing section of the patient record without any action needed",
+        "In the Task module as an unassigned task"
+      ],
+      "correct": 1,
+      "explanation": "Repeat prescription requests submitted online appear in the Prescription Requests queue, allowing the pharmacist to review clinical appropriateness before approving or rejecting."
+    },
+    {
+      "question": "What is the difference between a routine and a non-routine prescription request in Medicus?",
+      "options": [
+        "There is no difference - both are processed identically",
+        "Routine requests follow the standard approval workflow; non-routine requests require additional clinical review or override",
+        "Non-routine requests are for controlled drugs only",
+        "Routine requests can only be approved by a GP; non-routine requests can be approved by a pharmacist"
+      ],
+      "correct": 1,
+      "explanation": "Routine requests follow the standard repeat prescribing workflow. Non-routine requests are flagged for additional clinical review, for example when a medication is outside the usual prescribing interval or requires specific authorisation."
+    },
+    {
+      "question": "When reviewing a patient's medication regimen in Medicus, where do you find a complete view of their active medications including dose and frequency?",
+      "options": [
+        "In the last consultation note only",
+        "In the Prescribing/Medication Regimen section of the patient record",
+        "By running a monthly prescribing audit report",
+        "In the Patient Portal - only patients can view their full medication list"
+      ],
+      "correct": 1,
+      "explanation": "The Medication Regimen section of the patient record shows all active prescriptions with dose, frequency, and quantity, giving pharmacists a complete view for medication review."
+    },
+    {
+      "question": "Before issuing an EPS prescription in Medicus, what does the system automatically check against the patient's allergy record?",
+      "options": [
+        "Nothing - allergy checking is a manual responsibility",
+        "The prescribed medication is cross-checked against the patient's recorded allergies and a warning is displayed if a conflict exists",
+        "Only controlled drugs are checked against allergy records",
+        "Allergy checking only occurs if the pharmacist manually runs the check"
+      ],
+      "correct": 1,
+      "explanation": "Medicus automatically cross-references prescribed medications against the patient's allergy record during prescribing. A clinical warning is displayed if a potential allergy conflict is detected."
+    },
+    {
+      "question": "How do you report a suspected adverse drug reaction to the MHRA via the Yellow Card scheme from within Medicus?",
+      "options": [
+        "Post a paper Yellow Card form to the MHRA",
+        "Use the Yellow Card reporting link available within Medicus to submit the report electronically to the MHRA",
+        "Email the MHRA directly with the patient details",
+        "Adverse drug reactions are reported by the dispensing pharmacy only, not the prescriber"
+      ],
+      "correct": 1,
+      "explanation": "Medicus provides access to the MHRA Yellow Card reporting system. Pharmacists can initiate an electronic Yellow Card report for suspected adverse drug reactions directly from the system."
+    },
+    {
+      "question": "What does the Prescription Audit Report in Medicus allow a pharmacist to review?",
+      "options": [
+        "Staff timesheets and prescription workload per clinician",
+        "Prescribing patterns, volumes, and individual prescription history to support clinical governance and audit",
+        "Only the cost of prescriptions issued in the previous month",
+        "Controlled drug registers only"
+      ],
+      "correct": 1,
+      "explanation": "The Prescription Audit Report enables pharmacists to review prescribing patterns, volumes, and clinical appropriateness across the practice or for individual prescribers, supporting governance and PDSA cycles."
+    },
+    {
+      "question": "A patient asks for their prescriptions to be sent to a different pharmacy. How is a pharmacy nomination changed in Medicus?",
+      "options": [
+        "The patient must change their nomination directly via the NHS App",
+        "Update the patient's pharmacy nomination in their record within Medicus, which updates the EPS nomination on the NHS Spine",
+        "Phone the old pharmacy and ask them to transfer the nomination",
+        "Pharmacy nominations cannot be changed in Medicus - GP must do this"
+      ],
+      "correct": 1,
+      "explanation": "Pharmacy nominations can be updated directly in the patient record in Medicus. This change is transmitted to the NHS Spine EPS system, redirecting future electronic prescriptions to the new pharmacy."
+    },
+    {
+      "question": "When co-authorising a medication that has been initiated by a GP, what does the pharmacist need to verify before approving the repeat?",
+      "options": [
+        "Only that the patient's address is correct",
+        "Clinical appropriateness including dose, indication, monitoring requirements, and allergy status",
+        "That the prescription has been printed and signed on paper",
+        "That the pharmacy has stock of the medication"
+      ],
+      "correct": 1,
+      "explanation": "Pharmacist co-authorisation in Medicus involves reviewing clinical appropriateness: correct dose, clear indication, up-to-date monitoring, and absence of contraindications or allergy conflicts."
+    },
+    {
+      "question": "Where in Medicus do you view a patient's SCR (Summary Care Record) to check medications from other prescribers?",
+      "options": [
+        "Via the NHS spine portal in a separate browser window",
+        "Within the patient record via the Care Record or SCR link, accessible with active CIS2 authentication",
+        "By phoning NHS Digital directly",
+        "SCR data is not available in Medicus"
+      ],
+      "correct": 1,
+      "explanation": "Medicus integrates with NHS Spine to surface SCR data within the patient record. CIS2 Smartcard authentication is required to access this information."
+    }
+  ],
+  "Dispenser": [
+    {
+      "question": "Where do routine prescription requests appear for dispensers to process in Medicus?",
+      "options": [
+        "In the dispenser's personal task list",
+        "In the Prescription Requests queue, where requests can be reviewed and approved in order",
+        "Directly on the patient's medication list without any queue",
+        "In the Reporting module under 'Pending prescriptions'"
+      ],
+      "correct": 1,
+      "explanation": "All prescription requests, whether submitted online or at the counter, appear in the Prescription Requests queue. Dispensers work through this queue to process and approve routine requests."
+    },
+    {
+      "question": "How do you bulk approve a batch of routine repeat prescription requests in Medicus?",
+      "options": [
+        "Routine requests cannot be bulk approved - each must be individually reviewed",
+        "Select multiple requests in the Prescription Requests queue and use the bulk approve function",
+        "Ask the pharmacist to run an overnight batch approval process",
+        "Export the requests to a spreadsheet and re-import after checking"
+      ],
+      "correct": 1,
+      "explanation": "Medicus allows dispensers to select multiple routine repeat requests and approve them in bulk, improving efficiency for standard repeat medication processing."
+    },
+    {
+      "question": "How is an FP34D dispensing claim submitted via Medicus?",
+      "options": [
+        "By posting paper FP34D forms to NHS BSA monthly",
+        "Through the FP34D PPA Claims function in Medicus, which compiles and submits the claim electronically",
+        "By emailing a spreadsheet of dispensed items to NHS Prescription Services",
+        "FP34D claims are not supported in Medicus - a separate dispensing system is required"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports electronic submission of FP34D PPA dispensing claims through its integrated claims function, removing the need for paper-based monthly submissions to NHS BSA."
+    },
+    {
+      "question": "A patient requests an over-the-counter item from the dispensary. How is this recorded in Medicus?",
+      "options": [
+        "It is not recorded - OTC sales are cash only with no Medicus record",
+        "Using the Over-the-Counter medication recording feature, which logs the sale against the patient's record",
+        "By creating a new consultation for the patient",
+        "By sending a task to the pharmacist to document it"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports recording of over-the-counter medication sales against patient records, providing a complete medication history that includes OTC items dispensed by the practice dispensary."
+    },
+    {
+      "question": "Before dispensing a prescription, you notice the patient has a recorded allergy to a component of the medication. What does Medicus display?",
+      "options": [
+        "Nothing - allergy checking is not linked to dispensing workflows",
+        "A clinical warning alert highlighting the allergy conflict",
+        "The prescription is automatically cancelled",
+        "An email is sent to the prescriber automatically"
+      ],
+      "correct": 1,
+      "explanation": "Medicus displays a clinical warning when a dispensed item conflicts with a recorded allergy. The dispenser must review and escalate to the prescriber before dispensing."
+    },
+    {
+      "question": "A patient's pharmacy nomination is currently set to an external pharmacy but they want prescriptions dispensed in-house. How do you change this?",
+      "options": [
+        "Phone the external pharmacy and ask them to release the nomination",
+        "Update the pharmacy nomination in the patient record within Medicus to the practice dispensary",
+        "Ask the patient to change it via the NHS App only",
+        "Nominations cannot be changed once set"
+      ],
+      "correct": 1,
+      "explanation": "Pharmacy nominations are managed within the patient record in Medicus. Updating the nomination changes it on the NHS Spine EPS system, routing future prescriptions to the practice dispensary."
+    },
+    {
+      "question": "When reviewing a patient's medication regimen before dispensing, what key information should you check?",
+      "options": [
+        "Only the medication name",
+        "Medication name, dose, frequency, quantity, and any special instructions or allergy flags",
+        "Only whether the prescription has been electronically signed",
+        "The patient's appointment history"
+      ],
+      "correct": 1,
+      "explanation": "Before dispensing, the complete medication details - name, dose, frequency, quantity, and instructions - should be verified, alongside allergy flags to ensure safe dispensing."
+    },
+    {
+      "question": "What is the correct process for recording a prescription that has been dispensed and collected by the patient in Medicus?",
+      "options": [
+        "Mark the prescription as dispensed in the Prescription Requests section once the patient has collected",
+        "No action needed - collection is recorded automatically",
+        "Email the prescribing GP to confirm collection",
+        "Add a note in the patient's task list"
+      ],
+      "correct": 0,
+      "explanation": "Once a patient collects their dispensed medication, the dispenser marks the prescription as dispensed in the relevant section of Medicus, completing the dispensing audit trail."
+    },
+    {
+      "question": "During the FP34D claims process, what items need to be included to ensure the claim is accurate?",
+      "options": [
+        "Only prescription items dispensed to patients over 65",
+        "All dispensed prescription items for the claim period, including quantity, drug name, and endorsements",
+        "Only expensive medications above a certain cost threshold",
+        "Only items dispensed on paper FP10 prescriptions"
+      ],
+      "correct": 1,
+      "explanation": "FP34D claims must include all dispensed prescription items for the period, with correct drug names, quantities, and any endorsements required by NHS Prescription Services for accurate reimbursement."
+    },
+    {
+      "question": "How do you find a patient's prescription history in Medicus to check what has been dispensed previously?",
+      "options": [
+        "Run a practice-wide dispensing report from the Reporting module",
+        "Open the patient record and review the Prescribing section, which shows the history of issued and dispensed prescriptions",
+        "Contact NHS Prescription Services for the dispensing history",
+        "Dispensing history is not stored in Medicus"
+      ],
+      "correct": 1,
+      "explanation": "The Prescribing section of the patient record in Medicus holds a history of all prescriptions issued and dispensed, allowing dispensers to review previous dispensing activity."
+    }
+  ],
+  "Pharmacy Technician": [
+    {
+      "question": "Where do you find repeat prescription requests submitted by patients online in Medicus?",
+      "options": [
+        "In the patient record under the Consultations tab",
+        "In the Prescription Requests queue, accessible from the main navigation",
+        "In the Administrator's inbox only",
+        "In the Patient Portal admin panel"
+      ],
+      "correct": 1,
+      "explanation": "Online and in-person repeat prescription requests are consolidated in the Prescription Requests queue in Medicus, from which pharmacy technicians can review and process them."
+    },
+    {
+      "question": "What is the process for re-authorising a repeat medication that has run out of issues in Medicus?",
+      "options": [
+        "Delete the old medication and create a new prescription from scratch",
+        "Use the re-authorisation function in the Prescribing section to request or apply an extension of the repeat authorisation",
+        "Ask the patient to book an appointment with the GP before any action is taken",
+        "Re-authorisation is not available in Medicus - each expired repeat must be rewritten"
+      ],
+      "correct": 1,
+      "explanation": "Medicus includes a re-authorisation workflow for repeat medications that have exhausted their issued quantity, allowing pharmacy technicians to flag or process renewals within the system."
+    },
+    {
+      "question": "When checking a patient's medication regimen for a structured medication review, where is this information found in Medicus?",
+      "options": [
+        "In the Consultations tab, by reading through all past notes",
+        "In the Prescribing/Medication Regimen section showing all active, repeat, and acute medications",
+        "In the Reporting module under 'Patient Medication Summary'",
+        "Via the Patient Portal only - patients manage their own medication lists"
+      ],
+      "correct": 1,
+      "explanation": "The Medication Regimen section provides a complete view of a patient's active prescriptions, including dose, frequency, and authorisation status, essential for structured medication reviews."
+    },
+    {
+      "question": "How does a pharmacy technician record an over-the-counter sale in Medicus?",
+      "options": [
+        "OTC items are never recorded in Medicus",
+        "Using the dedicated OTC recording function which logs the item against the patient's record",
+        "By writing a consultation note",
+        "By adding it to the patient's repeat medication list"
+      ],
+      "correct": 1,
+      "explanation": "Medicus includes OTC recording functionality, allowing practice dispensaries to log over-the-counter sales against patient records for a complete medication history."
+    },
+    {
+      "question": "How do you identify which items need to be included in the monthly FP34D PPA dispensing claim?",
+      "options": [
+        "By manually reviewing all prescriptions issued in the month",
+        "Using the FP34D claims function in Medicus which collates all eligible dispensed items for the claim period",
+        "By exporting a report from the Reporting module and manually checking each line",
+        "NHS BSA sends a reminder list of items to include each month"
+      ],
+      "correct": 1,
+      "explanation": "The FP34D claims function in Medicus automatically collates dispensed prescription items for the relevant claim period, reducing the risk of items being missed from the submission."
+    },
+    {
+      "question": "A patient's pharmacy nomination needs updating to a different pharmacy. Where in Medicus is this done?",
+      "options": [
+        "Only the patient can change their own nomination via the NHS App",
+        "In the patient record, within the relevant prescribing or demographic section, which updates the nomination on the NHS Spine",
+        "By phoning NHS BSA to request the change",
+        "Pharmacy nominations are set at registration and cannot be changed"
+      ],
+      "correct": 1,
+      "explanation": "Pharmacy nominations are updated in the patient record in Medicus. Changes are transmitted to the NHS Spine EPS system, re-routing future electronic prescriptions accordingly."
+    },
+    {
+      "question": "What action should a pharmacy technician take if a prescription request is flagged for clinical review before approval?",
+      "options": [
+        "Approve the request and add a note for the pharmacist to check later",
+        "Leave the request in the queue and escalate to the pharmacist or prescriber for clinical review before processing",
+        "Reject the request and ask the patient to book a GP appointment",
+        "Contact the patient directly to ask about their symptoms"
+      ],
+      "correct": 1,
+      "explanation": "Requests flagged for clinical review must be escalated to a pharmacist or prescriber. Pharmacy technicians should not approve clinically flagged requests without appropriate clinical sign-off."
+    },
+    {
+      "question": "When processing a prescription request for a controlled drug, what additional consideration applies in Medicus?",
+      "options": [
+        "Controlled drugs are processed identically to standard prescriptions",
+        "Controlled drug prescriptions require prescriber authorisation and are subject to additional legal requirements that Medicus supports through its controlled drug workflows",
+        "Pharmacy technicians cannot process any controlled drug requests",
+        "Controlled drug requests are submitted via a separate system outside Medicus"
+      ],
+      "correct": 1,
+      "explanation": "Controlled drug prescriptions are subject to additional legal requirements. Medicus incorporates specific controlled drug workflows, and prescriber sign-off is required before a CD prescription can be issued."
+    },
+    {
+      "question": "The Prescription Audit Report in Medicus can be used by pharmacy technicians for which purpose?",
+      "options": [
+        "To track staff attendance and workload",
+        "To review prescribing volumes and individual prescription history for governance and reconciliation purposes",
+        "To submit monthly NHS reporting returns",
+        "To book patient appointments based on prescribing history"
+      ],
+      "correct": 1,
+      "explanation": "The Prescription Audit Report helps pharmacy technicians review prescribing volumes and history for reconciliation, governance, and clinical audit purposes within the practice."
+    },
+    {
+      "question": "How do you check whether an EPS prescription has been successfully transmitted to the NHS Spine after approval?",
+      "options": [
+        "Phone the patient's nominated pharmacy to ask if they received it",
+        "Check the prescription status in the Prescribing section of the patient record, which shows EPS transmission status",
+        "Wait 24 hours and check back the following day",
+        "EPS transmission is not tracked in Medicus"
+      ],
+      "correct": 1,
+      "explanation": "The Prescribing section of the patient record in Medicus displays the EPS transmission status for each prescription, confirming whether it has been successfully sent to the NHS Spine."
+    }
+  ],
+  "Receptionist": [
+    {
+      "question": "How do you register a new permanent patient at the practice in Medicus?",
+      "options": [
+        "Create a temporary record and wait for the patient's NHS number to be verified",
+        "Use the Patient Registration section to create a new patient record, complete the required demographic fields, and submit the registration to NHAIS/PCSE",
+        "Ask the patient to register via the Patient Portal only",
+        "Registrations are done exclusively through NHS England centrally"
+      ],
+      "correct": 1,
+      "explanation": "New permanent patient registrations are completed in the Patient Registration section of Medicus. The record is created with demographic details and the registration is submitted electronically to NHAIS/PCSE."
+    },
+    {
+      "question": "A patient calls to cancel their appointment. What is the correct way to do this in Medicus?",
+      "options": [
+        "Delete the appointment from the diary so the slot disappears",
+        "Open the appointment in the Appointment Book and select the cancel option, which frees the slot for rebooking",
+        "Mark the appointment as DNA",
+        "Move the appointment to a 'cancelled' diary column"
+      ],
+      "correct": 1,
+      "explanation": "Cancelling an appointment in Medicus is done via the appointment details, freeing the slot for another patient. DNA is reserved for patients who do not attend without cancelling."
+    },
+    {
+      "question": "How do you register a patient who is staying temporarily in the area and needs urgent care?",
+      "options": [
+        "Temporary patients cannot be registered in Medicus",
+        "Use the Temporary (INT) registration option in the Patient Registration section",
+        "Register them as a permanent patient and remove them later",
+        "Ask the patient to attend A&E instead"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports temporary and immediately necessary treatment (INT) registrations, allowing practices to see patients not on their permanent list and submit the appropriate registration to NHAIS."
+    },
+    {
+      "question": "A patient reports they have moved house. Where do you update their address in Medicus?",
+      "options": [
+        "In the patient's portal account - they must update it themselves",
+        "In the patient record's demographic section, where address and contact details can be edited",
+        "By sending a task to the practice administrator",
+        "Address changes require a paper form to be sent to NHS England"
+      ],
+      "correct": 1,
+      "explanation": "Patient demographic details including address are updated directly in the patient record. Changes are saved in Medicus and relevant updates are reflected in the patient's NHS registration."
+    },
+    {
+      "question": "When booking an appointment for a patient, how do you check the patient's communication preference (e.g. whether they want a reminder by text or letter)?",
+      "options": [
+        "Ask the patient every time they book",
+        "Check the patient's Communication Preferences in their record before booking",
+        "Communication preferences are set practice-wide and apply to all patients",
+        "Communication preferences are only set during initial registration and cannot be viewed later"
+      ],
+      "correct": 1,
+      "explanation": "Each patient record in Medicus includes a Communication Preferences section. Receptionists should check this when booking to ensure reminders and correspondence are sent in the patient's preferred format."
+    },
+    {
+      "question": "You believe a patient has a duplicate record in Medicus. What should you do?",
+      "options": [
+        "Delete one of the records immediately",
+        "Use the Merge Duplicate Records function to flag and merge the records, preserving the clinical history from both",
+        "Leave both records and add a note to each saying 'possible duplicate'",
+        "Register a new record and ignore the old ones"
+      ],
+      "correct": 1,
+      "explanation": "Medicus has a duplicate record merge function that combines the demographic and clinical data from both records safely, ensuring the patient has a single accurate and complete record."
+    },
+    {
+      "question": "A patient wishes to deregister from the practice. What is the process in Medicus?",
+      "options": [
+        "Archive the patient record immediately",
+        "Process the deregistration in the Patient Registration section, which notifies NHAIS/PCSE to remove them from the practice list",
+        "Send the patient's records to their new practice by post",
+        "Mark the patient as 'inactive' in their record"
+      ],
+      "correct": 1,
+      "explanation": "Deregistrations are managed in the Patient Registration section, submitting the removal to NHAIS/PCSE electronically. GP2GP will transfer the clinical record to the new practice once they register elsewhere."
+    },
+    {
+      "question": "A patient calls to say they need an appointment but the clinical diary is fully booked. What option does Medicus offer?",
+      "options": [
+        "Tell the patient to call back tomorrow",
+        "Check for cancellation slots, use the 'squeeze in' function if clinically necessary, or add the patient to a waiting list",
+        "Book them with a clinician at a different practice",
+        "Create a task for the GP to phone the patient instead - appointments cannot be added to full diaries"
+      ],
+      "correct": 1,
+      "explanation": "Medicus provides options for managing urgent demand including checking for cancellation slots and squeezing additional appointments into a full diary when clinically necessary."
+    },
+    {
+      "question": "How do you search for a patient in Medicus if you only know their date of birth and partial surname?",
+      "options": [
+        "You must have the full surname to search",
+        "Enter the partial surname and date of birth in the patient search bar - Medicus will return matching records",
+        "Run a report from the Reporting module to find patients by date of birth",
+        "Ask the patient for their NHS number before searching"
+      ],
+      "correct": 1,
+      "explanation": "The Medicus patient search accepts partial names combined with other identifiers such as date of birth, allowing receptionists to locate patients even with incomplete information."
+    },
+    {
+      "question": "Where can you view a list of all patients currently registered at the practice in Medicus?",
+      "options": [
+        "Only in a monthly report generated by the administrator",
+        "In the Patient List within the Patient Registration or Patient Records section",
+        "Via NHS England's national patient registration portal",
+        "The patient list is not accessible to receptionists - only the practice manager can view it"
+      ],
+      "correct": 1,
+      "explanation": "Medicus provides a Patient List view within the system, allowing authorised staff including receptionists to view and search the full list of registered patients."
+    }
+  ],
+  "Administrator": [
+    {
+      "question": "How do you add a new staff member to Medicus?",
+      "options": [
+        "Ask Medicus support to add them remotely",
+        "Use the User Management section to create a new user account, assign a job role, and set appropriate RBAC permissions",
+        "Give the new staff member an existing user's login credentials",
+        "New users are added automatically when they log in with their NHS Smartcard"
+      ],
+      "correct": 1,
+      "explanation": "New staff are added via User Management in Medicus. The administrator creates the account, assigns the appropriate job role, and sets role-based access controls (RBAC) to match the staff member's clinical or administrative function."
+    },
+    {
+      "question": "When a staff member leaves the practice, what is the correct action in Medicus?",
+      "options": [
+        "Delete their user account immediately",
+        "Archive the user account in User Management, which preserves audit trails while preventing further access",
+        "Change their password so they cannot log in",
+        "Move their account to a 'former staff' team"
+      ],
+      "correct": 1,
+      "explanation": "Departing staff accounts should be archived in User Management. Archiving preserves the audit trail for all actions the user performed while employed but immediately revokes their system access."
+    },
+    {
+      "question": "Where in Medicus do you configure the appointment diary for a new clinical session?",
+      "options": [
+        "In the Reporting module under 'Session planning'",
+        "In the Appointment Management or Diary Configuration section, where session types, slot durations, and availability are set",
+        "By sending a task to the clinical lead",
+        "Diary configuration is managed by Medicus centrally"
+      ],
+      "correct": 1,
+      "explanation": "Appointment diaries including session types, slot durations, and availability are configured in the Appointment Management or Diary Configuration area, giving practices full control over their clinical scheduling."
+    },
+    {
+      "question": "How do you set up automatic task assignment in Medicus so that certain tasks go to specific teams?",
+      "options": [
+        "Tasks are always manually assigned - automatic routing is not available",
+        "Configure automatic task assignment rules in the System Configuration or Task Management settings, linking task types to specific teams or roles",
+        "Automatic task routing is set up by each individual user in their profile settings",
+        "Contact Medicus support to configure task routing on your behalf"
+      ],
+      "correct": 1,
+      "explanation": "Medicus supports automatic task assignment through configuration rules that route task types to designated teams or roles, reducing manual triage and ensuring tasks reach the right people promptly."
+    },
+    {
+      "question": "What is the GPAD (GP Appointment Data) extract in Medicus and how often must it be submitted?",
+      "options": [
+        "A monthly financial report submitted to NHS BSA",
+        "A weekly extract of appointment data submitted to NHS England as part of national general practice reporting requirements",
+        "A quarterly patient satisfaction survey",
+        "An annual staff workload return submitted to the ICB"
+      ],
+      "correct": 1,
+      "explanation": "GPAD is a weekly NHS England reporting requirement. Medicus generates the appointment data extract which must be submitted weekly, providing national data on GP appointment capacity and activity."
+    },
+    {
+      "question": "How do you configure data sharing settings in Medicus, for example enabling SCR updates or EMIS data sharing?",
+      "options": [
+        "Data sharing is configured automatically at system installation and cannot be changed",
+        "Via the Data Sharing Configuration section in System Configuration, where sharing agreements and permissions are managed",
+        "By contacting NHS England directly to approve sharing arrangements",
+        "Data sharing settings are managed by the ICB and pushed to practices remotely"
+      ],
+      "correct": 1,
+      "explanation": "Data Sharing Configuration in Medicus System Configuration allows administrators to manage sharing agreements including SCR update permissions, EMIS sharing, and other NHS data sharing arrangements."
+    },
+    {
+      "question": "Where do you set up and manage teams in Medicus for task routing and staff organisation?",
+      "options": [
+        "In each individual user's profile settings",
+        "In the User Management section under Teams, where teams can be created, named, and staff assigned",
+        "Teams are preconfigured by Medicus and cannot be modified",
+        "In the Staff Scheduling module under 'Group management'"
+      ],
+      "correct": 1,
+      "explanation": "Teams are created and managed in the User Management section under Teams. Staff members are assigned to teams which are then used for task routing, diary configuration, and clinical governance."
+    },
+    {
+      "question": "How do you set up a staff member's working schedule in Medicus?",
+      "options": [
+        "Staff schedule themselves via their personal Medicus profile",
+        "In the Staff Scheduling section, where shifts, working days, and session patterns are configured for each staff member",
+        "By creating an appointment slot in their name for each working day",
+        "Staff schedules are imported from an external HR system only"
+      ],
+      "correct": 1,
+      "explanation": "Staff scheduling in Medicus is managed in the dedicated Staff Scheduling section, where administrators configure working days, session patterns, and availability for all clinical and administrative staff."
+    },
+    {
+      "question": "A new GP has joined who will be an independent prescriber. What must be configured in their Medicus user account to enable EPS prescribing?",
+      "options": [
+        "Nothing - all users can prescribe by default",
+        "Their prescriber role and prescribing permissions must be set in User Management, and their NHS Smartcard (CIS2) details must be linked to their account",
+        "They must apply to Medicus support for a prescribing licence",
+        "EPS prescribing is enabled automatically after 30 days"
+      ],
+      "correct": 1,
+      "explanation": "To enable EPS prescribing, the administrator must configure the correct prescriber job role and permissions in User Management, and ensure the GP's Smartcard details are correctly set up for CIS2 authentication."
+    },
+    {
+      "question": "How do you generate the weekly GPAD exception report in Medicus?",
+      "options": [
+        "GPAD exception reporting is done via NHS England's separate web portal",
+        "Use the GPAD Exception Reporting function in the Reporting section to identify and submit records that could not be included in the standard extract",
+        "Exceptions are handled automatically by the system without administrator action",
+        "The ICB manages GPAD exception reporting on behalf of all practices"
+      ],
+      "correct": 1,
+      "explanation": "The GPAD Exception Reporting tool in Medicus Reporting allows administrators to identify appointment records that failed the standard GPAD extract and submit them as exceptions to NHS England."
+    }
+  ],
+  "Other Clinical": [
+    {
+      "question": "How do you create a new consultation in Medicus as a clinical staff member?",
+      "options": [
+        "Ask the GP to open the consultation and then add your notes to it",
+        "Open the patient record and select 'New Consultation' from the Consultations tab",
+        "Start a consultation via the Task module only",
+        "Clinical staff other than GPs and ANPs cannot create consultations in Medicus"
+      ],
+      "correct": 1,
+      "explanation": "Clinical staff with appropriate permissions create new consultations from the Consultations tab in the patient record, allowing direct documentation of clinical encounters."
+    },
+    {
+      "question": "Where do you record a procedure you have performed during a patient visit in Medicus?",
+      "options": [
+        "In the patient's task list as a completed item",
+        "Within a consultation entry using appropriate SNOMED CT procedure codes",
+        "In the Reporting module under 'Clinical activity'",
+        "In the patient banner as a clinical alert"
+      ],
+      "correct": 1,
+      "explanation": "Procedures are documented within a consultation in Medicus using SNOMED CT codes, ensuring the record is clinically coded, searchable, and visible to the wider care team."
+    },
+    {
+      "question": "You need to refer a patient to a specialist service. How is a referral created in Medicus?",
+      "options": [
+        "Phone the specialist directly and ask them to add the patient",
+        "Use the Referrals section in Medicus or the integrated NHS e-RS to create and submit the referral",
+        "Ask the patient to self-refer using the NHS App",
+        "Email the referral letter to the specialist from your NHS email"
+      ],
+      "correct": 1,
+      "explanation": "Referrals are created in the Referrals section of Medicus, with integration into NHS e-RS for electronic referral submission to secondary care services."
+    },
+    {
+      "question": "A patient's blood test results have returned. Where do you find and action these in Medicus?",
+      "options": [
+        "Results are emailed to the requesting clinician's NHS email",
+        "In the Investigations section of the patient record, where results are displayed and can be actioned",
+        "Only the GP who ordered the test can view the results",
+        "In the Practice inbox, accessible only to administrators"
+      ],
+      "correct": 1,
+      "explanation": "Investigation results are returned to the Investigations section of the patient record in Medicus, where the requesting or reviewing clinician can view, comment on, and action them."
+    },
+    {
+      "question": "Where do you find the patient's clinical summary including significant diagnoses and ongoing conditions?",
+      "options": [
+        "In the most recent consultation note",
+        "In the Care Record section of the patient record, which provides an overview of active problems, diagnoses, and significant history",
+        "By running a QOF register report",
+        "In the Patient Portal - accessible to the patient but not to clinical staff in this format"
+      ],
+      "correct": 1,
+      "explanation": "The Care Record section of the patient record in Medicus provides a clinical summary including active problems, significant diagnoses, and ongoing conditions relevant to the patient's care."
+    },
+    {
+      "question": "How do you record a vaccination administered by a clinical member of staff in Medicus?",
+      "options": [
+        "Add a free-text note in the consultation",
+        "In the Vaccinations section of the patient record, entering vaccine details, batch number, route, site, and date",
+        "Send a task to the nurse to document the vaccination",
+        "Upload a scanned record in the Documents section"
+      ],
+      "correct": 1,
+      "explanation": "Vaccinations are recorded in the dedicated Vaccinations section, capturing all relevant details including vaccine type, batch number, route, site, and date, contributing to the patient's complete immunisation history."
+    },
+    {
+      "question": "How do you schedule a future recall or review action for a patient in Medicus?",
+      "options": [
+        "Set a personal reminder in your calendar",
+        "Use the Future Actions feature in the Care Record to add a recall action with a target date linked to the patient's record",
+        "Book a speculative appointment in the diary",
+        "Send a task to the receptionist to book the patient in 3 months"
+      ],
+      "correct": 1,
+      "explanation": "Future Actions in the Care Record allow clinical staff to schedule patient-specific recall or review actions with a due date, supporting proactive clinical management and LTC reviews."
+    },
+    {
+      "question": "An inbound letter from a hospital has appeared in Medicus. Where do you find and review it?",
+      "options": [
+        "In the Practice inbox, visible only to administrators",
+        "In the Documents section of the patient record, where inbound documents can be reviewed, coded, and filed",
+        "In the Consultation history as an attached file",
+        "In the Patient Portal for the patient to review first"
+      ],
+      "correct": 1,
+      "explanation": "Inbound documents including letters, discharge summaries, and clinic letters appear in the Documents section of the patient record, where clinical staff can review, code, and take action on them."
+    },
+    {
+      "question": "How do you record a patient's blood pressure and weight observation in Medicus as a clinical staff member?",
+      "options": [
+        "Only GPs can record observations in Medicus",
+        "In the Observations section of the patient record, where clinical measurements can be entered directly",
+        "In the Consultation notes as free text only",
+        "Via the Patient Portal, asking the patient to self-report"
+      ],
+      "correct": 1,
+      "explanation": "Clinical observations such as blood pressure and weight are recorded in the dedicated Observations section of the patient record, accessible to clinical staff with appropriate permissions."
+    },
+    {
+      "question": "Where do you check if a patient has any active allergies before administering a medication or vaccine?",
+      "options": [
+        "Ask the patient verbally and rely on their answer alone",
+        "Review the Allergies section of the patient record and check the patient banner for allergy warnings",
+        "Only the prescribing GP can check allergies",
+        "Allergy information is only visible in the SCR, not in the patient record directly"
+      ],
+      "correct": 1,
+      "explanation": "Active allergies are displayed in the Allergies section of the patient record and as clinical warnings in the patient banner. Clinical staff should always check both before administering any medication or vaccine."
+    }
+  ]
+}

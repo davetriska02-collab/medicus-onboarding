@@ -1,0 +1,200 @@
+#!/usr/bin/env python3
+"""
+Build data/data.js from data/articles.json and data/quizzes.json.
+
+If data/articles.json.changed exists (written by scrape_zendesk.py),
+this script will also:
+  1. Re-tag any new/untagged articles with Claude
+  2. Regenerate quizzes for any role whose article set changed
+
+Then bundles everything into data/data.js for the browser app.
+
+Usage (standalone):
+  ANTHROPIC_API_KEY=sk-... python scripts/build_data.py
+
+Usage (GitHub Actions - only runs full Claude pipeline if articles changed):
+  python scripts/build_data.py
+"""
+
+import json
+import os
+import re
+import sys
+import time
+from pathlib import Path
+
+ROOT        = Path(__file__).parent.parent
+ARTICLES_F  = ROOT / "data" / "articles.json"
+QUIZZES_F   = ROOT / "data" / "quizzes.json"
+DATA_JS_F   = ROOT / "data" / "data.js"
+CHANGED_F   = ROOT / "data" / "articles.json.changed"
+
+ROLES = [
+    "HCA", "ANP", "Nurse", "Paramedic", "Pharmacist",
+    "Dispenser", "Pharmacy Technician", "Receptionist",
+    "Administrator", "Other Clinical",
+]
+
+ROLE_DESCRIPTIONS = {
+    "HCA": "Health Care Assistant - takes observations, assists with clinical procedures, basic patient admin",
+    "ANP": "Advanced Nurse Practitioner - advanced clinical assessments, independent prescribing, complex patients",
+    "Nurse": "Practice Nurse - clinical assessments, wound care, vaccinations, chronic disease reviews",
+    "Paramedic": "Practice Paramedic - urgent/emergency care, independent assessments, some prescribing",
+    "Pharmacist": "Clinical Pharmacist - medication reviews, prescribing, drug interactions, results",
+    "Dispenser": "Dispenser - dispensing prescriptions, repeat requests, stock management",
+    "Pharmacy Technician": "Pharmacy Technician - technical dispensing, accuracy checking, stock control",
+    "Receptionist": "Receptionist - patient-facing admin, booking, signposting, online requests",
+    "Administrator": "Practice Administrator/Manager - system config, reporting, all back-office functions",
+    "Other Clinical": "Other Clinical Staff - physiotherapist, OT, dietitian, counsellor, allied health",
+}
+
+
+def extract_json(text):
+    m = re.search(r"```(?:json)?\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*```", text)
+    if m:
+        return m.group(1)
+    for sc, ec in [('{', '}'), ('[', ']')]:
+        start = text.find(sc)
+        if start != -1:
+            depth = 0
+            for i, ch in enumerate(text[start:], start):
+                if ch == sc: depth += 1
+                elif ch == ec:
+                    depth -= 1
+                    if depth == 0:
+                        return text[start:i+1]
+    return text
+
+
+def claude_call(client, prompt):
+    resp = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=8192,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.content[0].text
+
+
+def tag_untagged(client, articles):
+    """Tag articles that only have ['Administrator'] as a placeholder role."""
+    untagged = [a for a in articles if a.get("roles") == ["Administrator"] or not a.get("roles")]
+    if not untagged:
+        print("  All articles already tagged.")
+        return
+
+    print(f"  Tagging {len(untagged)} untagged/new articles...")
+    lines = [f'{a["id"]}: {a["title"]} | {a["section"]}' for a in untagged]
+    role_desc = "\n".join(f"- {r}: {ROLE_DESCRIPTIONS[r]}" for r in ROLES)
+
+    prompt = f"""Tag these Medicus EPR support articles for GP practice staff roles.
+
+Staff roles:
+{role_desc}
+
+Articles:
+{chr(10).join(lines)}
+
+Return ONLY a JSON object: {{"<id>": ["Role1", "Role2"], ...}} for all {len(untagged)} articles.
+Be inclusive. Administrator should appear on almost everything."""
+
+    raw = claude_call(client, prompt)
+    result = json.loads(extract_json(raw))
+    tag_map = {int(k): v for k, v in result.items()}
+
+    for a in articles:
+        if a["id"] in tag_map:
+            a["roles"] = tag_map[a["id"]]
+
+
+def generate_quiz(client, role, role_articles):
+    """Generate 10 MCQ questions for a role."""
+    sample = sorted(role_articles, key=lambda a: len(a.get("body", "")))[:20]
+    context = "\n---\n".join(
+        f"ARTICLE: {a['title']}\nSECTION: {a['section']}\n{a.get('body','')[:600]}"
+        for a in sample
+    )
+    prompt = f"""Write a Medicus EPR onboarding quiz for a new {role} at a UK GP practice.
+Role: {ROLE_DESCRIPTIONS[role]}
+
+Based on these articles, write 10 practical multiple choice questions for someone in their first week.
+
+Articles:
+{context}
+
+Return ONLY a JSON array of 10 objects:
+[{{"question":"?","options":["A","B","C","D"],"correct":0,"explanation":"Why correct."}}]
+- correct is 0-based index. Make wrong options plausible. Explanation 1-2 sentences."""
+
+    raw = claude_call(client, prompt)
+    return json.loads(extract_json(raw))[:10]
+
+
+def build_data_js(articles, quizzes):
+    articles_json = json.dumps(articles, ensure_ascii=False)
+    quizzes_json  = json.dumps(quizzes, ensure_ascii=False)
+    return (
+        f"// Auto-generated by build_data.py - do not edit by hand\n"
+        f"window.ARTICLES = {articles_json};\n"
+        f"window.QUIZZES  = {quizzes_json};\n"
+    )
+
+
+def main():
+    articles_changed = CHANGED_F.exists()
+
+    with open(ARTICLES_F, encoding="utf-8") as f:
+        articles = json.load(f)
+
+    quizzes = {}
+    if QUIZZES_F.exists():
+        with open(QUIZZES_F, encoding="utf-8") as f:
+            quizzes = json.load(f)
+
+    if articles_changed:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            print("WARNING: ANTHROPIC_API_KEY not set. Skipping re-tagging and quiz generation.")
+        else:
+            try:
+                import anthropic
+            except ImportError:
+                print("Installing anthropic...")
+                os.system(f"{sys.executable} -m pip install anthropic -q")
+                import anthropic
+
+            client = anthropic.Anthropic(api_key=api_key)
+
+            print("Re-tagging new articles...")
+            tag_untagged(client, articles)
+
+            with open(ARTICLES_F, "w", encoding="utf-8") as f:
+                json.dump(articles, f, ensure_ascii=False, indent=2)
+
+            print("Regenerating quizzes for all roles...")
+            for role in ROLES:
+                role_articles = [a for a in articles if role in (a.get("roles") or [])]
+                print(f"  {role} ({len(role_articles)} articles)...", end=" ", flush=True)
+                try:
+                    quizzes[role] = generate_quiz(client, role, role_articles)
+                    print(f"{len(quizzes[role])} questions.")
+                except Exception as e:
+                    print(f"ERROR: {e}")
+                time.sleep(1)
+
+            with open(QUIZZES_F, "w", encoding="utf-8") as f:
+                json.dump(quizzes, f, ensure_ascii=False, indent=2)
+
+        # Clean up flag
+        CHANGED_F.unlink(missing_ok=True)
+
+    # Always rebuild data.js
+    print("Building data/data.js...")
+    content = build_data_js(articles, quizzes)
+    with open(DATA_JS_F, "w", encoding="utf-8") as f:
+        f.write(content)
+    size_kb = DATA_JS_F.stat().st_size // 1024
+    print(f"  data.js written ({size_kb}KB)")
+
+
+if __name__ == "__main__":
+    main()
