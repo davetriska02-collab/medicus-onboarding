@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNDICATE</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <!-- Load order matters: dependencies first -->
+    <script src="js/core/constants.js"></script>
+    <script src="js/core/utils.js"></script>
+    <script src="js/rendering/iso.js"></script>
+    <script src="js/core/camera.js"></script>
+    <script src="js/core/input.js"></script>
+    <script src="js/core/audio.js"></script>
+    <script src="js/rendering/renderer.js"></script>
+    <script src="js/rendering/tiles.js"></script>
+    <script src="js/rendering/sprites.js"></script>
+    <script src="js/rendering/effects.js"></script>
+    <script src="js/rendering/minimap.js"></script>
+    <script src="js/rendering/hud.js"></script>
+    <script src="js/data/weapons.js"></script>
+    <script src="js/data/missions.js"></script>
+    <script src="js/data/research.js"></script>
+    <script src="js/data/cybernetics.js"></script>
+    <script src="js/data/maps.js"></script>
+    <script src="js/entities/entity.js"></script>
+    <script src="js/entities/agent.js"></script>
+    <script src="js/entities/civilian.js"></script>
+    <script src="js/entities/enemy.js"></script>
+    <script src="js/entities/vehicle.js"></script>
+    <script src="js/entities/projectile.js"></script>
+    <script src="js/systems/movement.js"></script>
+    <script src="js/systems/combat.js"></script>
+    <script src="js/systems/ai.js"></script>
+    <script src="js/systems/selection.js"></script>
+    <script src="js/systems/persuasion.js"></script>
+    <script src="js/systems/ipa.js"></script>
+    <script src="js/game/state.js"></script>
+    <script src="js/game/world.js"></script>
+    <script src="js/game/mission-manager.js"></script>
+    <script src="js/screens/title.js"></script>
+    <script src="js/screens/worldmap.js"></script>
+    <script src="js/screens/briefing.js"></script>
+    <script src="js/screens/mission.js"></script>
+    <script src="js/screens/debrief.js"></script>
+    <script src="js/screens/research-screen.js"></script>
+    <script src="js/screens/loadout.js"></script>
+    <script src="js/core/engine.js"></script>
+</body>
+</html>
