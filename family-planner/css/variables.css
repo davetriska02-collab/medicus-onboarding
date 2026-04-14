@@ -1,0 +1,47 @@
+:root {
+  /* Colours */
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-hover: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #e94560;
+
+  /* Status */
+  --success: #2dc653;
+  --warning: #f4d03f;
+  --danger: #e94560;
+
+  /* Family member colours */
+  --family-1: #58a6ff;
+  --family-2: #f78166;
+  --family-3: #a371f7;
+  --family-4: #2dc653;
+  --family-5: #f4d03f;
+  --family-6: #ff9bce;
+
+  /* Spacing */
+  --gap: 16px;
+  --radius: 16px;
+  --radius-sm: 8px;
+
+  /* Font */
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Font sizes */
+  --text-xs: 13px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-clock: 72px;
+
+  /* Shadows */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  /* Transition */
+  --transition: 0.15s ease;
+}

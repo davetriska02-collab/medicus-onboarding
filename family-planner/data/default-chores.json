@@ -1,0 +1,144 @@
+[
+  {
+    "title": "Empty dishwasher",
+    "icon": "dishes",
+    "frequency": "daily",
+    "points": 5
+  },
+  {
+    "title": "Load dishwasher",
+    "icon": "dishes",
+    "frequency": "daily",
+    "points": 5
+  },
+  {
+    "title": "Wipe kitchen surfaces",
+    "icon": "spray",
+    "frequency": "daily",
+    "points": 3
+  },
+  {
+    "title": "Hoover downstairs",
+    "icon": "vacuum",
+    "frequency": "weekly",
+    "days": ["saturday"],
+    "points": 10
+  },
+  {
+    "title": "Hoover upstairs",
+    "icon": "vacuum",
+    "frequency": "weekly",
+    "days": ["saturday"],
+    "points": 10
+  },
+  {
+    "title": "Take bins out",
+    "icon": "bin",
+    "frequency": "weekly",
+    "days": ["monday"],
+    "points": 5
+  },
+  {
+    "title": "Bring bins in",
+    "icon": "bin",
+    "frequency": "weekly",
+    "days": ["tuesday"],
+    "points": 3
+  },
+  {
+    "title": "Tidy bedroom",
+    "icon": "bed",
+    "frequency": "daily",
+    "points": 5
+  },
+  {
+    "title": "Make bed",
+    "icon": "bed",
+    "frequency": "daily",
+    "points": 3
+  },
+  {
+    "title": "Set table for dinner",
+    "icon": "cutlery",
+    "frequency": "daily",
+    "points": 3
+  },
+  {
+    "title": "Clear table after dinner",
+    "icon": "cutlery",
+    "frequency": "daily",
+    "points": 3
+  },
+  {
+    "title": "Feed pets",
+    "icon": "pet",
+    "frequency": "daily",
+    "points": 5
+  },
+  {
+    "title": "Put washing on",
+    "icon": "laundry",
+    "frequency": "weekly",
+    "days": ["monday", "wednesday", "friday"],
+    "points": 5
+  },
+  {
+    "title": "Hang washing out",
+    "icon": "laundry",
+    "frequency": "weekly",
+    "days": ["monday", "wednesday", "friday"],
+    "points": 5
+  },
+  {
+    "title": "Put clothes away",
+    "icon": "laundry",
+    "frequency": "weekly",
+    "days": ["tuesday", "thursday", "saturday"],
+    "points": 5
+  },
+  {
+    "title": "Water plants",
+    "icon": "plant",
+    "frequency": "weekly",
+    "days": ["wednesday", "sunday"],
+    "points": 3
+  },
+  {
+    "title": "Clean bathroom",
+    "icon": "spray",
+    "frequency": "weekly",
+    "days": ["sunday"],
+    "points": 10
+  },
+  {
+    "title": "Mow the lawn",
+    "icon": "garden",
+    "frequency": "weekly",
+    "days": ["saturday"],
+    "points": 15
+  },
+  {
+    "title": "Take dog for a walk",
+    "icon": "pet",
+    "frequency": "daily",
+    "points": 10
+  },
+  {
+    "title": "Do homework",
+    "icon": "book",
+    "frequency": "weekdays",
+    "points": 10
+  },
+  {
+    "title": "Pack school bag",
+    "icon": "bag",
+    "frequency": "weekdays",
+    "points": 3
+  },
+  {
+    "title": "Put shoes away",
+    "icon": "shoes",
+    "frequency": "daily",
+    "points": 2
+  }
+]
