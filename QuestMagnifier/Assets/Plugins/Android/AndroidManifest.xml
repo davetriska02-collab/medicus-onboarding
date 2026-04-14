@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.questmagnifier.app">
+
+    <!-- Passthrough and camera permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="com.oculus.permission.USE_SCENE" />
+
+    <!-- Microphone for voice commands -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Quest 3 feature requirements -->
+    <uses-feature android:name="android.hardware.vr.headtracking" android:required="true" android:version="1" />
+    <uses-feature android:name="oculus.software.overlay_keyboard" android:required="false" />
+    <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="true" />
+    <uses-feature android:name="oculus.software.handtracking" android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:label="QuestMagnifier"
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+
+        <meta-data android:name="com.oculus.supportedDevices" android:value="quest3" />
+        <meta-data android:name="com.oculus.intent.category.VR" android:value="vr_only" />
+        <!-- Enable passthrough at system level -->
+        <meta-data android:name="com.oculus.mr.feature.PASSTHROUGH" android:value="true" />
+
+        <activity
+            android:name="com.unity3d.player.UnityPlayerActivity"
+            android:configChanges="density|fontScale|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
+            android:excludeFromRecents="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="com.oculus.intent.category.VR" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  productName: QuestMagnifier
+  companyName: QuestMagnifier
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
+  androidMinSdkVersion: 29
+  androidTargetSdkVersion: 32
+  AndroidBundleVersionCode: 1
+  bundleVersion: 1.0.0
+  applicationIdentifier:
+    Android: com.questmagnifier.app
+  # XR Settings
+  virtualRealitySupported: 1
+  # Android Settings
+  androidSplashScreen: {fileID: 0}
+  androidShowActivityIndicatorOnLoading: -1
+  AndroidProfiler: 0
+  # Rendering
+  colorSpace: 1  # Linear
+  graphicsAPIs:
+    Android:
+      - 15  # OpenGLES3
+      - 18  # Vulkan
+  # Script
+  scriptingBackend:
+    Android: 1  # IL2CPP
+  apiCompatibilityLevel: 3  # .NET Standard 2.1
+  # Architecture
+  targetArchitectures: 4  # ARM64
+  # Quality
+  qualitySettingsNames:
+    - Quest
+  # Orientation
+  defaultInterfaceOrientation: 4  # Landscape Left
+  allowedAutorotateToPortrait: 0
+  allowedAutorotateToPortraitUpsideDown: 0
+  allowedAutorotateToLandscapeRight: 1
+  allowedAutorotateToLandscapeLeft: 1
