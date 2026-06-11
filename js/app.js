@@ -107,28 +107,6 @@ function toast(msg, kind = "ok") {
   toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
-// Format flat scraped article text into readable HTML.
-function formatBody(text) {
-  const LEADS = ["Purpose", "Note:", "Note that", "Important:", "Warning:", "Tip:", "Before you start", "Prerequisites", "Summary", "Overview", "What's next", "Related articles"];
-  // Split into sentences, group ~2-3 per paragraph.
-  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) || [text];
-  const paras = [];
-  let buf = [];
-  for (const s of sentences) {
-    buf.push(s.trim());
-    const joined = buf.join(" ");
-    if (buf.length >= 2 && joined.length > 220) { paras.push(joined); buf = []; }
-  }
-  if (buf.length) paras.push(buf.join(" "));
-  return paras.map((p) => {
-    let h = esc(p);
-    for (const lead of LEADS) {
-      if (p.startsWith(lead)) { h = `<strong>${esc(lead)}</strong>` + esc(p.slice(lead.length)); break; }
-    }
-    return `<p>${h}</p>`;
-  }).join("");
-}
-
 // ── Router ──────────────────────────────────────────────────────────────────
 
 function nav(path) { location.hash = path; }
@@ -153,7 +131,6 @@ function route() {
       const mod = pathway.modules.find((m) => m.id === mid);
       if (!mod) return viewPerson(person);
       if (seg.length === 4) return viewModule(person, mod);
-      if (seg[4] === "l") return viewLesson(person, mod, parseInt(seg[5], 10));
       if (seg[4] === "w") return viewWalkthroughLaunch(person, mod);
       if (seg[4] === "quiz") return viewQuiz(person, mod, false);
       return viewModule(person, mod);
@@ -445,7 +422,8 @@ function viewModule(person, mod) {
     <div class="lesson-row ${pr.read[a.id] ? "read" : ""}">
       <button class="lesson-check" title="${pr.read[a.id] ? "Mark unread" : "Mark as read"}"
         onclick="toggleRead('${person.id}','${mod.id}',${a.id})">${pr.read[a.id] ? icon("check-circle", 20) : icon("circle", 20)}</button>
-      <a class="lesson-title" href="#/p/${person.id}/m/${mod.id}/l/${a.id}">${esc(a.title)}</a>
+      <a class="lesson-title" href="${esc(a.url)}" target="_blank" rel="noopener"
+        onclick="markRead('${person.id}',${a.id})">${esc(a.title)} ${icon("external-link", 13)}</a>
       ${isCore ? "" : '<span class="pill">reference</span>'}
     </div>`;
 
@@ -493,7 +471,8 @@ function viewModule(person, mod) {
 
     <section>
       <div class="section-head"><h2>${icon("book", 19)} Lessons</h2>
-        <span class="muted">${mod.core.filter((a) => pr.read[a.id]).length} of ${mod.core.length} core lessons read</span></div>
+        <span class="muted">${mod.core.filter((a) => pr.read[a.id]).length} of ${mod.core.length} core lessons read ·
+          lessons open the Medicus Help Centre (with screenshots) in a new tab</span></div>
       <div class="card lesson-list">
         ${mod.core.map((a, i) => lessonRow(a, i, true)).join("") || '<p class="muted pad">No lessons for this role in this module.</p>'}
       </div>
@@ -583,44 +562,16 @@ function clearSignoff(pid, mid) {
   route();
 }
 
-// ── View: Lesson reader ─────────────────────────────────────────────────────
-
-function viewLesson(person, mod, articleId) {
-  const a = window.ARTICLES.find((x) => x.id === articleId);
-  if (!a) return viewModule(person, mod);
-  const all = mod.core.concat(mod.reference);
-  const idx = all.findIndex((x) => x.id === articleId);
-  const next = all[idx + 1];
-  const isRead = !!person.progress.read[a.id];
-
-  shell(`
-    <nav class="crumbs"><a href="#/">Team</a> ${icon("chevron-right", 13)}
-      <a href="#/p/${person.id}">${esc(person.name)}</a> ${icon("chevron-right", 13)}
-      <a href="#/p/${person.id}/m/${mod.id}">${esc(mod.def.title)}</a> ${icon("chevron-right", 13)} <span>Lesson</span></nav>
-
-    <article class="lesson">
-      <header class="lesson-head">
-        <span class="eyebrow">${esc(a.section)} · lesson ${idx + 1} of ${all.length}</span>
-        <h1>${esc(a.title)}</h1>
-        <a class="btn btn-ghost btn-sm" href="${esc(a.url)}" target="_blank" rel="noopener">
-          ${icon("external-link", 14)} Open in the Medicus Help Centre (with screenshots)</a>
-      </header>
-      <div class="lesson-body">${formatBody(a.body)}</div>
-      <footer class="lesson-foot">
-        <button class="btn ${isRead ? "btn-ghost" : "btn-primary"}" onclick="markReadAndNext('${person.id}','${mod.id}',${a.id},${next ? next.id : "null"})">
-          ${isRead ? icon("check", 15) + " Already read" : icon("check", 15) + " Mark as read"}${next ? " · next lesson" : ""}
-        </button>
-        <a class="btn btn-ghost" href="#/p/${person.id}/m/${mod.id}">Back to module</a>
-      </footer>
-    </article>`);
-}
-
-function markReadAndNext(pid, mid, aid, nextId) {
+// Lessons open the Medicus Help Centre in a new tab (content is not
+// replicated in-app — the articles need their screenshots to make sense).
+// Clicking a lesson link marks it read; the circle toggle can undo.
+function markRead(pid, aid) {
   const p = getPerson(pid);
-  p.progress.read[aid] = Date.now();
-  saveStore();
-  if (nextId) nav(`p/${pid}/m/${mid}/l/${nextId}`);
-  else { toast("Lesson complete"); nav(`p/${pid}/m/${mid}`); }
+  if (!p.progress.read[aid]) {
+    p.progress.read[aid] = Date.now();
+    saveStore();
+    setTimeout(route, 100); // refresh after the new tab opens
+  }
 }
 
 // ── View: Quiz ──────────────────────────────────────────────────────────────
@@ -927,8 +878,7 @@ function viewSearch(query) {
       <a class="card search-hit" href="${esc(a.url)}" target="_blank" rel="noopener">
         <span class="pill">${esc(a.section)}</span>
         <b>${esc(a.title)}</b>
-        <p>${esc(a.body.slice(0, 180))}…</p>
-        <span class="muted">${icon("external-link", 13)} medicus-health.zendesk.com · roles: ${a.roles.slice(0, 4).map(esc).join(", ")}${a.roles.length > 4 ? "…" : ""}</span>
+        <span class="muted">${icon("external-link", 13)} opens in the Medicus Help Centre · for: ${a.roles.slice(0, 4).map(esc).join(", ")}${a.roles.length > 4 ? "…" : ""}</span>
       </a>`).join("")
       : `<p class="muted pad">No matches for “${esc(query)}”. Try different words — e.g. “DNA”, “smartcard”, “repeat prescription”.</p>`;
   }
@@ -958,6 +908,6 @@ window.addEventListener("DOMContentLoaded", () => {
 // expose handlers used in inline HTML
 Object.assign(window, {
   nav, addPersonSubmit, prefillRole, exportProgress, importProgress, removePerson,
-  toggleRead, confirmComp, unconfirmComp, doSignoff, clearSignoff, markReadAndNext,
+  toggleRead, confirmComp, unconfirmComp, doSignoff, clearSignoff, markRead,
   answerQuiz, nextQuiz, finishQuiz, startWalkthrough, closeWalkthrough, renderWtStep,
 });

@@ -15,7 +15,7 @@ step, no backend, no runtime network calls.
 |---|---|
 | **12 role pathways** | Receptionist/Care Navigator, Medical Secretary, Practice Manager, GP, GP Registrar, ANP, Practice Nurse, HCA, Paramedic, Clinical Pharmacist, Pharmacy Technician, Dispenser |
 | **Modules** | Each pathway is built from a module library (Getting Started, Appointments, Registration, Records, Consultations, Prescribing, Communications, Documents, Vaccinations, Scheduling, Reporting, Admin & Config), filtered to articles tagged for that role |
-| **Lessons** | Full article text in an in-app reader, with a link out to the original help-centre article for screenshots; curated *core* lessons count toward completion, the rest sit in a reference library |
+| **Lessons** | Link directly to the original help-centre articles (the scraped text doesn't read well without its screenshots, so content is deliberately **not** replicated in-app); clicking a lesson opens it in a new tab and marks it read. Curated *core* lessons count toward completion, the rest sit in a reference library |
 | **Walkthroughs** | 7 interactive, click-to-advance simulations of Medicus screens (navigation, booking & arriving, registration, consultations, prescribing, documents, SMS) — fictional patients, training only |
 | **Knowledge checks** | Per-module quizzes keyword-matched from the role's question bank, plus a final 10-question assessment (pass mark 80%) |
 | **Competency sign-off** | Per-module "I can confidently…" checklist with confirm/witness, supervisor module sign-off, and a print-formatted competency record |

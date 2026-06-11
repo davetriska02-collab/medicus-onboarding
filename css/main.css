@@ -261,15 +261,6 @@ p { margin: 0; }
   border: 1px solid var(--border-strong); min-width: 170px;
 }
 
-/* ── Lesson reader ─────────────────────────────────────────────────────── */
-
-.lesson { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(22px, 4vw, 44px); }
-.lesson-head h1 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 14px; }
-.lesson-body { margin-top: 22px; font-size: .94rem; color: var(--ink-soft); }
-.lesson-body p { margin: 0 0 14px; max-width: 72ch; }
-.lesson-body strong { color: var(--ink); }
-.lesson-foot { display: flex; gap: 10px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
-
 /* ── Quiz ──────────────────────────────────────────────────────────────── */
 
 .quiz { max-width: 720px; margin: 0 auto; }
