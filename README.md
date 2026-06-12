@@ -12,8 +12,9 @@ to the [Medicus Help Centre](https://medicus-health.zendesk.com/hc/en-gb)
 
 ## Installing for your practice
 
-1. **Download** this repository (GitHub → *Code* → *Download ZIP*) and extract
-   it into a folder on your practice **shared drive**, e.g. `S:\Medicus Onboarding\`.
+1. **Download the latest practice pack** from the
+   [Releases page](https://github.com/davetriska02-collab/medicus-onboarding/releases/latest)
+   and extract it onto your practice **shared drive**, e.g. `S:\Medicus Onboarding\`.
 2. Open `index.html` in **Edge or Chrome** on any practice machine.
 3. The setup wizard asks for your practice name and a **training-lead
    passcode**, then offers to create the shared data file — save
