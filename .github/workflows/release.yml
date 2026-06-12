@@ -1,13 +1,18 @@
 name: Release practice pack
 
-# Cut a release by pushing a version tag, e.g.:
-#   git tag v1.0.0 && git push origin v1.0.0
+# Cut a release either by pushing a version tag (git tag v1.0.0 && git push
+# origin v1.0.0) or manually from the Actions tab with a version input.
 # Builds a clean ZIP containing only what a practice needs and attaches it
-# to a GitHub Release.
+# to a GitHub Release (the release creates the tag if it doesn't exist).
 
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to release, e.g. v1.0.0"
+        required: true
 
 permissions:
   contents: write
@@ -15,6 +20,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,12 +32,13 @@ jobs:
           cp index.html README.md "pack/Medicus Onboarding/"
           cp -r css js "pack/Medicus Onboarding/"
           cp data/data.js "pack/Medicus Onboarding/data/"
-          cd pack && zip -rq "../medicus-onboarding-${GITHUB_REF_NAME}.zip" .
+          cd pack && zip -rq "../medicus-onboarding-${VERSION}.zip" .
 
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "medicus-onboarding-${GITHUB_REF_NAME}.zip" \
-            --title "Medicus Onboarding $GITHUB_REF_NAME" \
+          gh release create "$VERSION" "medicus-onboarding-${VERSION}.zip" \
+            --target "$GITHUB_SHA" \
+            --title "Medicus Onboarding $VERSION" \
             --notes-file .github/release-notes.md
