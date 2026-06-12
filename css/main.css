@@ -317,6 +317,91 @@ p { margin: 0; }
 .search-hit p { font-size: .82rem; color: var(--muted); }
 .search-hit .pill { align-self: flex-start; }
 
+/* ── Login, setup, dashboard, settings (practice service) ──────────────── */
+
+.practice-name { font-size: .82rem; color: var(--muted); font-weight: 600; margin-left: 6px; white-space: nowrap; }
+.storage-badge {
+  display: inline-flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 700;
+  border: 1px solid var(--border-strong); border-radius: 999px; padding: 4px 10px; color: var(--muted); white-space: nowrap;
+}
+.storage-badge.ok { border-color: #bbe7c8; background: var(--success-soft); color: var(--success); }
+.id-chip { display: inline-flex; align-items: center; gap: 7px; font-size: .82rem; font-weight: 700; color: var(--ink-soft); white-space: nowrap; }
+.avatar-xs { width: 26px; height: 26px; font-size: .66rem; display: inline-grid; place-items: center; border-radius: 50%; color: #fff; }
+.small { font-size: .75rem; }
+.page-title { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; margin-bottom: 20px; }
+
+.gate-card { max-width: 480px; margin: 60px auto; text-align: center; padding: 40px 32px; }
+.gate-icn { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--primary-soft); color: var(--primary-deep); }
+.gate-card h1 { font-size: 1.3rem; }
+.gate-card p { margin-top: 10px; }
+
+.hero-setup { align-items: flex-start; }
+.setup-note { display: inline-flex; align-items: center; gap: 7px; margin-top: 16px; font-size: .82rem; font-weight: 600; color: var(--success); background: var(--success-soft); border-radius: 999px; padding: 6px 14px; }
+.setup-card { padding: 24px; display: flex; flex-direction: column; gap: 13px; }
+.setup-card h3 { font-size: .95rem; display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.setup-card label { font-size: .8rem; font-weight: 600; color: var(--ink-soft); display: flex; flex-direction: column; gap: 5px; }
+.setup-card input[type=text], .setup-card input[type=password], .setup-card input:not([type]) {
+  font: inherit; font-size: .88rem; padding: 9px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+}
+.setup-card input:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+.radio { flex-direction: row !important; gap: 10px !important; align-items: flex-start; cursor: pointer; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); }
+.radio:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); }
+.radio input { margin-top: 3px; accent-color: var(--primary); }
+.radio code { font-size: .76rem; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+
+.login-page { max-width: 760px; margin: 24px auto; text-align: center; }
+.login-page h1 { font-size: 1.6rem; font-weight: 800; }
+.login-page > .muted { display: block; margin-top: 8px; }
+.login-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); margin-top: 26px; text-align: left; }
+.login-tile {
+  display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center;
+  font: inherit; padding: 18px 12px; cursor: pointer;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); transition: all .15s ease; color: var(--ink);
+}
+.login-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); border-color: var(--primary); }
+.login-tile.sel { border-color: var(--primary); background: var(--primary-soft); }
+.login-tile b { font-size: .9rem; }
+.login-admin { border-style: dashed; }
+.login-panel { max-width: 360px; margin: 22px auto 0; padding: 22px; }
+.login-panel-head { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.login-panel form { display: flex; flex-direction: column; gap: 10px; }
+.login-panel input {
+  font: inherit; font-size: 1rem; text-align: center; letter-spacing: .2em; padding: 10px 12px;
+  border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm);
+}
+.login-panel input:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+.login-panel .muted { margin-bottom: 4px; }
+
+.dash-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
+.dash-head h1 { font-size: 1.6rem; font-weight: 800; }
+.dash-table-wrap { overflow-x: auto; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.dash-table th { text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 12px 14px; border-bottom: 1.5px solid var(--border-strong); }
+.dash-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.dash-table tr:last-child td { border-bottom: 0; }
+.dash-name { display: flex; align-items: center; gap: 10px; color: var(--ink); line-height: 1.3; }
+.dash-name:hover b { color: var(--primary); }
+.dash-actions { white-space: nowrap; }
+.mod-dots { display: flex; gap: 5px; flex-wrap: wrap; max-width: 220px; }
+.mod-dot { width: 13px; height: 13px; border-radius: 4px; background: var(--ring-bg); }
+.mod-dot.part { background: var(--accent); opacity: .55; }
+.mod-dot.done { background: var(--success); }
+.add-person form.add-person-row { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
+.add-person-row input { flex: 2; min-width: 180px; }
+.add-person-row select { flex: 2; min-width: 180px; }
+.add-person .small { margin-top: 8px; }
+
+.settings-card { padding: 22px; margin-bottom: 16px; }
+.settings-card h3 { font-size: .95rem; display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.settings-card p { font-size: .86rem; color: var(--ink-soft); margin-bottom: 10px; }
+.settings-form { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.settings-form label { font-size: .76rem; font-weight: 600; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.settings-form input { font: inherit; font-size: .86rem; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); min-width: 200px; }
+.settings-notes { margin: 0; padding-left: 18px; font-size: .82rem; display: flex; flex-direction: column; gap: 7px; }
+.settings-card code { font-size: .78rem; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+
 /* ── Toast & boot error ────────────────────────────────────────────────── */
 
 .toast {

@@ -1,44 +1,19 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Medicus Onboarding — application
-// Vanilla JS single-page app. No build step, no runtime network calls.
-// Data: window.ARTICLES / window.QUIZZES (data/data.js, scraped help centre),
-//       window.MODULES / window.PERSONAS (js/curriculum.js),
-//       window.WALKTHROUGHS (js/walkthroughs.js).
+// Vanilla JS single-page app. No build step, no backend.
+// Data layer (storage modes, auth, merge): js/store.js
+// Content: window.ARTICLES / window.QUIZZES (data/data.js),
+//          window.MODULES / window.PERSONAS (js/curriculum.js),
+//          window.WALKTHROUGHS (js/walkthroughs.js).
+//
+// Access model:
+//   - first run → practice setup wizard (name, training-lead passcode, storage)
+//   - staff log in with a personal PIN and see only their own pathway
+//   - the training lead (admin passcode) sees everyone: dashboard, people
+//     management, PIN resets, exports and settings
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STORE_KEY = "medicus-onboarding-v2";
 const PASS_MARK = 0.8;
-
-let store = loadStore();
-
-function loadStore() {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) { /* corrupted store — start fresh */ }
-  return { people: {}, order: [] };
-}
-
-function saveStore() {
-  localStorage.setItem(STORE_KEY, JSON.stringify(store));
-}
-
-function uid() {
-  return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
-}
-
-function getPerson(id) { return store.people[id] || null; }
-
-function newPerson(name, role) {
-  const p = {
-    id: uid(), name: name.trim(), role, created: Date.now(),
-    progress: { read: {}, wt: {}, quiz: {}, comps: {}, signoff: {}, assessment: null },
-  };
-  store.people[p.id] = p;
-  store.order.push(p.id);
-  saveStore();
-  return p;
-}
 
 // ── Progress maths ──────────────────────────────────────────────────────────
 
@@ -82,6 +57,10 @@ function fmtDate(ts) {
   return new Date(ts).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function initials(name) {
+  return name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+}
+
 function ring(frac, size = 52, stroke = 5) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r;
   const pct = Math.round(frac * 100);
@@ -107,9 +86,15 @@ function toast(msg, kind = "ok") {
   toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
 }
 
-// ── Router ──────────────────────────────────────────────────────────────────
+// ── Router & access control ─────────────────────────────────────────────────
 
 function nav(path) { location.hash = path; }
+
+function canView(personId) {
+  if (isAdmin()) return true;
+  const u = sessionUser();
+  return u && u.id === personId;
+}
 
 function route() {
   const hash = location.hash.replace(/^#\/?/, "");
@@ -117,11 +102,21 @@ function route() {
   closeWalkthrough(false);
   document.body.classList.remove("print-mode");
 
-  if (!seg.length) return viewHome();
+  if (needsReconnect) return viewReconnect();
+  if (!store.practice) return viewSetup();
+  const sess = session();
+  if (!sess) return viewLogin();
+  if (sess.kind === "user" && !getPerson(sess.id)) { setSession(null); return viewLogin(); }
+
+  if (!seg.length) {
+    if (isAdmin()) return viewAdminHome();
+    return viewPerson(sessionUser());
+  }
   if (seg[0] === "search") return viewSearch(decodeURIComponent(seg[1] || ""));
+  if (seg[0] === "settings") return isAdmin() ? viewSettings() : viewLogin();
   if (seg[0] === "p") {
     const person = getPerson(seg[1]);
-    if (!person) return viewHome();
+    if (!person || !canView(person.id)) return nav("");
     if (seg.length === 2) return viewPerson(person);
     if (seg[2] === "record") return viewRecord(person);
     if (seg[2] === "assessment") return viewQuiz(person, null, true);
@@ -136,146 +131,386 @@ function route() {
       return viewModule(person, mod);
     }
   }
-  viewHome();
+  nav("");
+}
+
+function storageBadge() {
+  return storageMode === "shared"
+    ? `<span class="storage-badge ok" title="Progress is saved to the practice's shared data file">${icon("folder", 12)} Shared file</span>`
+    : `<span class="storage-badge" title="Progress is saved in this browser only — the training lead can switch to a shared file in Settings">${icon("lock", 12)} This device only</span>`;
+}
+
+function identityChip() {
+  if (isAdmin()) {
+    return `<span class="id-chip"><span class="avatar avatar-xs" style="background:var(--ink)">${icon("shield-plus", 13)}</span> Training lead</span>
+      <a class="btn btn-ghost btn-sm" href="#/settings">${icon("settings", 14)}</a>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">${icon("x", 13)} Log out</button>`;
+  }
+  const u = sessionUser();
+  if (!u) return "";
+  const persona = getPersona(u.role);
+  return `<span class="id-chip"><span class="avatar avatar-xs" style="background:${persona ? persona.color : "var(--primary)"}">${esc(initials(u.name))}</span> ${esc(u.name.split(" ")[0])}</span>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">${icon("x", 13)} Log out</button>`;
 }
 
 function shell(content, opts = {}) {
   const app = document.getElementById("app");
+  const authed = !!session() && store.practice && !needsReconnect;
   app.innerHTML = `
     <header class="site-header">
       <a class="brand" href="#/">
         <span class="brand-mark">${icon("sparkle", 18)}</span>
         <span class="brand-name">medic<b>us</b> <span class="brand-sub">onboarding</span></span>
+        ${store.practice ? `<span class="practice-name">· ${esc(store.practice.name)}</span>` : ""}
       </a>
       <div class="header-actions">
+        ${authed ? `
         <form class="header-search" onsubmit="event.preventDefault(); nav('search/' + encodeURIComponent(this.q.value))">
           ${icon("search", 15)}<input name="q" placeholder="Search the help library…" value="${esc(opts.q || "")}">
         </form>
-        <a class="btn btn-ghost btn-sm" href="#/">${icon("users", 15)} Team</a>
+        ${storageBadge()}
+        ${identityChip()}` : storageBadge()}
       </div>
     </header>
     <main class="container ${opts.wide ? "wide" : ""}">${content}</main>
     <footer class="site-footer">
       Built on the <a href="https://medicus-health.zendesk.com/hc/en-gb" target="_blank" rel="noopener">Medicus Help Centre</a> ·
-      training simulation, not the live Medicus product · progress is stored in this browser
+      training simulation, not the live Medicus product · no patient data is stored
     </footer>`;
   window.scrollTo(0, 0);
 }
 
-// ── View: Home / Team ───────────────────────────────────────────────────────
+// ── View: Reconnect (shared file needs a permission click) ──────────────────
 
-function viewHome() {
+function viewReconnect() {
+  shell(`
+    <div class="gate-card card">
+      <div class="gate-icn">${icon("folder", 34)}</div>
+      <h1>Reconnect to the practice data file</h1>
+      <p class="muted">Your browser remembers the shared data file but needs your OK to use it again
+      (a one-click browser security rule).</p>
+      <div class="result-actions">
+        <button class="btn btn-primary" onclick="doReconnect()">${icon("check", 15)} Reconnect</button>
+        <button class="btn btn-ghost" onclick="pickDifferentFile()">${icon("upload", 15)} Choose the file manually</button>
+      </div>
+    </div>`);
+}
+
+async function doReconnect() {
+  try {
+    if (await reconnectShared()) { toast("Connected to practice data"); route(); }
+    else toast("Permission was not granted", "err");
+  } catch (e) {
+    toast("Couldn't reconnect — try choosing the file manually", "err");
+  }
+}
+
+async function pickDifferentFile() {
+  try {
+    await connectSharedFile(false);
+    needsReconnect = false;
+    toast("Connected to practice data");
+    route();
+  } catch (e) { /* picker dismissed */ }
+}
+
+// ── View: First-run practice setup ──────────────────────────────────────────
+
+function viewSetup() {
+  const existing = store.order.length;
+  shell(`
+    <section class="hero hero-setup">
+      <div class="hero-text">
+        <span class="eyebrow">Set up Medicus onboarding for your practice</span>
+        <h1>One folder. Every role. <em>Signed-off competence.</em></h1>
+        <p>Guided Medicus training for all ${PERSONAS.length} jobs in the surgery — help-centre lessons, clickable
+        walkthroughs, knowledge checks and a formal competency record, with individual logins and a
+        training-lead view of the whole team.</p>
+        ${existing ? `<p class="setup-note">${icon("check-circle", 14)} ${existing} existing ${existing === 1 ? "person" : "people"} found on this device — they'll be kept.</p>` : ""}
+      </div>
+      <form class="card setup-card" onsubmit="event.preventDefault(); submitSetup(this)">
+        <h3>${icon("briefcase", 18)} Practice details</h3>
+        <label>Practice name
+          <input name="pname" required maxlength="60" placeholder="e.g. Witley Surgery"></label>
+        <label>Training-lead passcode <span class="muted">(the super-user login — keep it private)</span>
+          <input name="pass1" type="password" required minlength="6" placeholder="At least 6 characters"></label>
+        <label>Confirm passcode
+          <input name="pass2" type="password" required minlength="6"></label>
+
+        <h3>${icon("folder", 18)} Where should progress be saved?</h3>
+        ${supportsSharedMode() ? `
+        <label class="radio"><input type="radio" name="storage" value="create" checked>
+          <span><b>Shared data file (recommended)</b><br>
+          <span class="muted">Creates <code>medicus-onboarding-data.json</code> — save it in this app's shared-drive folder so every machine sees the same team and progress.</span></span></label>
+        <label class="radio"><input type="radio" name="storage" value="open">
+          <span><b>Connect to an existing data file</b><br>
+          <span class="muted">Your practice has already set up — pick its data file from the shared folder.</span></span></label>
+        <label class="radio"><input type="radio" name="storage" value="local">
+          <span><b>This device only</b><br>
+          <span class="muted">Progress stays in this browser. You can switch to a shared file later in Settings.</span></span></label>
+        ` : `<p class="muted">This browser can't write to shared folders (use Edge or Chrome for that) — progress will be saved on this device only.</p>`}
+
+        <button class="btn btn-primary" type="submit">${icon("play", 15)} Set up practice</button>
+        <p class="muted small">PINs and passcodes deter casual snooping — they are not strong security. Only training
+        progress is stored; never any patient data.</p>
+      </form>
+    </section>`, { wide: true });
+}
+
+async function submitSetup(form) {
+  const name = form.pname.value.trim();
+  const p1 = form.pass1.value, p2 = form.pass2.value;
+  if (p1 !== p2) return toast("Passcodes don't match", "err");
+  const choice = form.storage ? form.storage.value : "local";
+  try {
+    if (choice === "open") {
+      await connectSharedFile(false); // may already contain a practice
+    }
+    if (!store.practice) {
+      store.practice = { name, adminHash: await hashSecret(p1), created: Date.now(), updated: Date.now() };
+    }
+    if (choice === "create") await connectSharedFile(true);
+    saveStore();
+    setSession({ kind: "admin" });
+    toast(`Welcome, ${store.practice.name}`);
+    nav("");
+    route();
+  } catch (e) {
+    if (e && e.name === "AbortError") return; // picker dismissed — stay on form
+    toast("Setup failed: " + e.message, "err");
+  }
+}
+
+// ── View: Login ─────────────────────────────────────────────────────────────
+
+function viewLogin(selectedId = null, mode = null) {
+  const people = store.order.map((id) => store.people[id]).filter(Boolean);
+  let panel = "";
+
+  if (selectedId === "__admin") {
+    panel = loginPanel("Training lead", "var(--ink)", icon("shield-plus", 16), `
+      <form onsubmit="event.preventDefault(); adminLogin(this)">
+        <input name="pass" type="password" placeholder="Practice passcode" required autofocus>
+        <button class="btn btn-primary" type="submit">Log in</button>
+      </form>`);
+  } else if (selectedId) {
+    const p = getPerson(selectedId);
+    if (p && !p.pinHash) {
+      panel = loginPanel(p.name, getPersona(p.role).color, esc(initials(p.name)), `
+        <p class="muted">First login — choose a PIN you'll remember (at least 4 digits).</p>
+        <form onsubmit="event.preventDefault(); setPinAndLogin('${p.id}', this)">
+          <input name="pin1" type="password" inputmode="numeric" placeholder="Choose a PIN" required minlength="4" autofocus>
+          <input name="pin2" type="password" inputmode="numeric" placeholder="Confirm PIN" required minlength="4">
+          <button class="btn btn-primary" type="submit">Set PIN & start</button>
+        </form>`);
+    } else if (p) {
+      panel = loginPanel(p.name, getPersona(p.role).color, esc(initials(p.name)), `
+        <form onsubmit="event.preventDefault(); userLogin('${p.id}', this)">
+          <input name="pin" type="password" inputmode="numeric" placeholder="Your PIN" required autofocus>
+          <button class="btn btn-primary" type="submit">Log in</button>
+        </form>
+        <p class="muted small">Forgotten? The training lead can reset your PIN.</p>`);
+    }
+  }
+
+  shell(`
+    <section class="login-page">
+      <h1>Who's training today?</h1>
+      <p class="muted">Pick your name. Progress is personal — what you confirm is signed in your name.</p>
+      <div class="grid login-grid">
+        ${people.map((p) => {
+          const persona = getPersona(p.role);
+          return `<button class="login-tile ${selectedId === p.id ? "sel" : ""}" onclick="viewLogin('${p.id}')">
+            <span class="avatar" style="background:${persona ? persona.color : "var(--primary)"}">${esc(initials(p.name))}</span>
+            <b>${esc(p.name)}</b>
+            <span class="muted">${persona ? esc(persona.title) : ""}</span>
+            ${!p.pinHash ? '<span class="pill">new — set your PIN</span>' : ""}
+          </button>`;
+        }).join("")}
+        <button class="login-tile login-admin ${selectedId === "__admin" ? "sel" : ""}" onclick="viewLogin('__admin')">
+          <span class="avatar" style="background:var(--ink)">${icon("shield-plus", 18)}</span>
+          <b>Training lead</b>
+          <span class="muted">Team dashboard & admin</span>
+        </button>
+      </div>
+      ${panel}
+      ${!people.length ? `<p class="muted" style="margin-top:18px">No staff yet — log in as the training lead to add your team.</p>` : ""}
+    </section>`);
+  const input = document.querySelector(".login-panel input");
+  if (input) input.focus();
+}
+
+function loginPanel(title, color, avatarHtml, body) {
+  return `<div class="card login-panel">
+    <div class="login-panel-head">
+      <span class="avatar" style="background:${color}">${avatarHtml}</span>
+      <b>${esc(title)}</b>
+    </div>${body}</div>`;
+}
+
+async function userLogin(id, form) {
+  const p = getPerson(id);
+  const h = await hashSecret(form.pin.value);
+  if (p && p.pinHash === h) {
+    setSession({ kind: "user", id });
+    toast(`Welcome back, ${p.name.split(" ")[0]}`);
+    nav(""); route();
+  } else {
+    toast("Wrong PIN", "err");
+    form.pin.value = ""; form.pin.focus();
+  }
+}
+
+async function setPinAndLogin(id, form) {
+  if (form.pin1.value !== form.pin2.value) return toast("PINs don't match", "err");
+  const p = getPerson(id);
+  p.pinHash = await hashSecret(form.pin1.value);
+  touch(p); saveStore();
+  setSession({ kind: "user", id });
+  toast("PIN set — let's go");
+  nav(""); route();
+}
+
+async function adminLogin(form) {
+  const h = await hashSecret(form.pass.value);
+  if (h === store.practice.adminHash) {
+    setSession({ kind: "admin" });
+    nav(""); route();
+  } else {
+    toast("Wrong passcode", "err");
+    form.pass.value = ""; form.pass.focus();
+  }
+}
+
+function logout() {
+  setSession(null);
+  nav(""); route();
+}
+
+// ── View: Training-lead dashboard ───────────────────────────────────────────
+
+function viewAdminHome() {
   const people = store.order.map((id) => store.people[id]).filter(Boolean);
   const roleOptions = PERSONAS.map((p) => `<option value="${p.id}">${esc(p.title)}</option>`).join("");
+  const avg = people.length ? people.reduce((n, p) => n + overallProgress(p), 0) / people.length : 0;
+  const done = people.filter((p) => overallProgress(p) >= 0.999).length;
 
-  const hero = `
-    <section class="hero">
-      <div class="hero-text">
-        <span class="eyebrow">Role-based training for general practice</span>
-        <h1>Get every member of the team <em>confidently competent</em> in Medicus</h1>
-        <p>A guided pathway for each job role in the surgery — curated help-centre lessons, clickable practice walkthroughs,
-        knowledge checks and a formal competency sign-off, person by person.</p>
-        <div class="hero-stats">
-          <div><b>${PERSONAS.length}</b><span>job roles</span></div>
-          <div><b>${window.ARTICLES.length}</b><span>help-centre lessons</span></div>
-          <div><b>${Object.keys(WALKTHROUGHS).length}</b><span>interactive walkthroughs</span></div>
-          <div><b>${Object.values(MODULES).reduce((n, m) => n + m.competencies.length, 0)}</b><span>competencies</span></div>
-        </div>
-      </div>
-      <div class="hero-art">${heroArt()}</div>
-    </section>`;
-
-  const addCard = `
-    <div class="card add-person">
-      <h3>${icon("user", 18)} Start someone's onboarding</h3>
-      <form onsubmit="event.preventDefault(); addPersonSubmit(this)">
-        <input name="name" placeholder="Full name, e.g. Priya Shah" required maxlength="60">
-        <select name="role" required>
-          <option value="" disabled selected>Choose their job role…</option>
-          ${roleOptions}
-        </select>
-        <button class="btn btn-primary" type="submit">${icon("play", 15)} Create pathway</button>
-      </form>
-    </div>`;
-
-  const peopleCards = people.map((p) => {
+  const rows = people.map((p) => {
     const persona = getPersona(p.role);
+    const pathway = buildPathway(p.role);
     const frac = overallProgress(p);
-    const done = frac >= 0.999;
-    return `
-    <a class="card person-card" href="#/p/${p.id}" style="--accent:${persona ? persona.color : "var(--primary)"}">
-      <div class="person-top">
-        <span class="avatar" style="background:${persona ? persona.color : "var(--primary)"}">${esc(initials(p.name))}</span>
-        ${ring(frac)}
-      </div>
-      <b>${esc(p.name)}</b>
-      <span class="person-role">${persona ? icon(persona.icon, 14) : ""} ${persona ? esc(persona.title) : esc(p.role)}</span>
-      <span class="person-meta">${done ? `<span class="pill pill-green">${icon("award", 12)} Competent — signed off</span>` : `Started ${fmtDate(p.created)}`}</span>
-    </a>`;
+    const dots = pathway.modules.map((m) => {
+      const f = moduleProgress(p, m);
+      const cls = f >= 0.999 ? "done" : f > 0 ? "part" : "";
+      return `<span class="mod-dot ${cls}" title="${esc(m.def.title)} — ${Math.round(f * 100)}%"></span>`;
+    }).join("");
+    const assess = p.progress.assessment;
+    return `<tr>
+      <td><a class="dash-name" href="#/p/${p.id}">
+        <span class="avatar avatar-xs" style="background:${persona.color}">${esc(initials(p.name))}</span>
+        <span><b>${esc(p.name)}</b><br><span class="muted">${esc(persona.title)}</span></span></a></td>
+      <td>${ring(frac, 42, 4)}</td>
+      <td><div class="mod-dots">${dots}</div></td>
+      <td>${assess ? (assess.passed ? `<span class="pill pill-green">${icon("award", 11)} ${assess.score}/${assess.total}</span>` : `<span class="pill">${assess.score}/${assess.total}</span>`) : '<span class="muted">—</span>'}</td>
+      <td>${p.pinHash ? `<button class="btn btn-ghost btn-sm" onclick="resetPin('${p.id}')" title="Clear PIN — they set a new one next login">Reset PIN</button>` : '<span class="pill">no PIN yet</span>'}</td>
+      <td class="dash-actions">
+        <a class="btn btn-ghost btn-sm" href="#/p/${p.id}/record" title="Competency record">${icon("printer", 13)}</a>
+        <button class="btn btn-ghost btn-sm btn-danger" onclick="removePerson('${p.id}')" title="Remove">${icon("trash", 13)}</button>
+      </td>
+    </tr>`;
   }).join("");
 
-  const teamSection = `
-    <section class="team-section">
+  shell(`
+    <section class="dash-head">
+      <div>
+        <span class="eyebrow">Training-lead dashboard</span>
+        <h1>${esc(store.practice.name)}</h1>
+      </div>
+      <div class="hero-stats">
+        <div><b>${people.length}</b><span>people</span></div>
+        <div><b>${done}</b><span>fully signed off</span></div>
+        <div><b>${Math.round(avg * 100)}%</b><span>average progress</span></div>
+      </div>
+    </section>
+
+    <section>
       <div class="section-head">
-        <h2>${icon("users", 20)} The team</h2>
+        <h2>${icon("users", 20)} Team progress</h2>
         <div class="section-actions">
-          <button class="btn btn-ghost btn-sm" onclick="exportProgress()">${icon("download", 14)} Export progress</button>
-          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">${icon("upload", 14)} Import</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportCsv()">${icon("download", 14)} CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportProgress()">${icon("download", 14)} Backup (JSON)</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">${icon("upload", 14)} Restore</button>
           <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProgress(this)">
         </div>
       </div>
-      <div class="grid people-grid">${addCard}${peopleCards}</div>
-    </section>`;
+      ${people.length ? `
+      <div class="card dash-table-wrap">
+        <table class="dash-table">
+          <thead><tr><th>Person</th><th>Overall</th><th>Modules</th><th>Assessment</th><th>PIN</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>` : ""}
+      <div class="card add-person" style="margin-top:16px">
+        <h3>${icon("user", 18)} Add someone to the team</h3>
+        <form class="add-person-row" onsubmit="event.preventDefault(); addPersonSubmit(this)">
+          <input name="name" placeholder="Full name, e.g. Priya Shah" required maxlength="60">
+          <select name="role" required>
+            <option value="" disabled selected>Job role…</option>${roleOptions}
+          </select>
+          <button class="btn btn-primary" type="submit">${icon("play", 15)} Create pathway</button>
+        </form>
+        <p class="muted small">They'll appear on the login screen and set their own PIN on first login.</p>
+      </div>
+    </section>
 
-  const rolesSection = `
     <section>
       <div class="section-head"><h2>${icon("compass", 20)} Pathways by role</h2></div>
       <div class="grid roles-grid">
-        ${PERSONAS.map((p) => {
-          const mods = p.modules.length;
-          return `<div class="role-tile" style="--accent:${p.color}" onclick="prefillRole('${p.id}')">
+        ${PERSONAS.map((p) => `<div class="role-tile" style="--accent:${p.color}">
             <span class="role-icn">${icon(p.icon, 22)}</span>
             <b>${esc(p.title)}</b>
             <p>${esc(p.blurb)}</p>
-            <span class="role-meta">${mods} modules ${icon("chevron-right", 14)}</span>
-          </div>`;
-        }).join("")}
+            <span class="role-meta">${p.modules.length} modules</span>
+          </div>`).join("")}
       </div>
-    </section>`;
-
-  shell(hero + teamSection + rolesSection, { wide: true });
-}
-
-function initials(name) {
-  return name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+    </section>`, { wide: true });
 }
 
 function addPersonSubmit(form) {
   const name = form.name.value.trim();
   const role = form.role.value;
   if (!name || !role) return;
-  const p = newPerson(name, role);
-  toast(`Pathway created for ${name}`);
-  nav(`p/${p.id}`);
+  newPerson(name, role);
+  toast(`${name} added — they set a PIN on first login`);
+  route();
 }
 
-function prefillRole(roleId) {
-  const sel = document.querySelector(".add-person select[name=role]");
-  if (sel) {
-    sel.value = roleId;
-    document.querySelector(".add-person input[name=name]").focus();
-    document.querySelector(".add-person").scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+function resetPin(id) {
+  const p = getPerson(id);
+  if (!confirm(`Reset ${p.name}'s PIN? They'll choose a new one next time they log in.`)) return;
+  p.pinHash = null;
+  touch(p); saveStore();
+  toast("PIN reset");
+  route();
+}
+
+function removePerson(id) {
+  const p = getPerson(id);
+  if (!p) return;
+  if (!confirm(`Remove ${p.name} and all their progress? This cannot be undone.`)) return;
+  deletePerson(p.id);
+  toast(`${p.name} removed`);
+  route();
 }
 
 function exportProgress() {
   const blob = new Blob([JSON.stringify(store, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `medicus-onboarding-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `medicus-onboarding-backup-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
-  toast("Progress exported");
+  toast("Backup downloaded");
 }
 
 function importProgress(input) {
@@ -285,40 +520,133 @@ function importProgress(input) {
   reader.onload = () => {
     try {
       const data = JSON.parse(reader.result);
-      if (!data.people || !data.order) throw new Error("bad format");
-      store = data;
+      if (!data.people) throw new Error("bad format");
+      Object.assign(store, mergeStores(store, migrateImport(data)));
       saveStore();
-      toast("Progress imported");
+      toast("Backup merged in");
       route();
     } catch (e) {
-      toast("That file isn't a valid progress export", "err");
+      toast("That file isn't a valid backup", "err");
     }
   };
   reader.readAsText(file);
   input.value = "";
 }
 
-function heroArt() {
-  // abstract "connected care" illustration
-  return `<svg viewBox="0 0 360 280" fill="none" aria-hidden="true">
-    <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0E7490"/><stop offset="1" stop-color="#134E4A"/></linearGradient></defs>
-    <rect x="20" y="30" width="220" height="150" rx="14" fill="url(#hg)" opacity="0.95"/>
-    <rect x="38" y="52" width="110" height="12" rx="6" fill="#fff" opacity="0.85"/>
-    <rect x="38" y="76" width="184" height="8" rx="4" fill="#fff" opacity="0.4"/>
-    <rect x="38" y="92" width="160" height="8" rx="4" fill="#fff" opacity="0.4"/>
-    <rect x="38" y="116" width="86" height="34" rx="8" fill="#2DD4BF"/>
-    <path d="M50 133l6 6 12-12" stroke="#134E4A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <rect x="150" y="116" width="72" height="34" rx="8" fill="#fff" opacity="0.18"/>
-    <circle cx="280" cy="80" r="44" fill="#F0FDFA" stroke="#0E7490" stroke-width="2"/>
-    <path d="M280 60v40M260 80h40" stroke="#0E7490" stroke-width="7" stroke-linecap="round"/>
-    <rect x="120" y="160" width="220" height="100" rx="14" fill="#fff" stroke="#CBD5E1"/>
-    <circle cx="152" cy="192" r="14" fill="#0E7490" opacity="0.9"/>
-    <rect x="176" y="184" width="92" height="9" rx="4" fill="#94A3B8"/>
-    <rect x="176" y="200" width="60" height="7" rx="3" fill="#CBD5E1"/>
-    <rect x="138" y="226" width="186" height="14" rx="7" fill="#F1F5F9"/>
-    <rect x="138" y="226" width="120" height="14" rx="7" fill="#14B8A6"/>
-  </svg>`;
+function migrateImport(data) {
+  if (!data.version) data = { version: 3, practice: data.practice || null, people: data.people, order: data.order || Object.keys(data.people) };
+  for (const p of Object.values(data.people)) {
+    if (!("pinHash" in p)) p.pinHash = null;
+    if (!p.updated) p.updated = p.created || Date.now();
+  }
+  return data;
+}
+
+function exportCsv() {
+  const lines = [["Name", "Role", "Overall %", "Module", "Module %", "Competencies", "Supervisor sign-off", "Signed off on", "Knowledge check", "Final assessment"].join(",")];
+  for (const id of store.order) {
+    const p = store.people[id];
+    if (!p) continue;
+    const persona = getPersona(p.role);
+    const pathway = buildPathway(p.role);
+    const assess = p.progress.assessment;
+    for (const m of pathway.modules) {
+      const so = p.progress.signoff[m.id];
+      const q = p.progress.quiz[m.id];
+      const comps = `${m.competencies.filter((c) => p.progress.comps[m.id + ":" + c.id]).length}/${m.competencies.length}`;
+      lines.push([
+        csvCell(p.name), csvCell(persona.title), Math.round(overallProgress(p) * 100),
+        csvCell(m.def.title), Math.round(moduleProgress(p, m) * 100), comps,
+        csvCell(so ? so.name : ""), so ? fmtDate(so.at) : "",
+        q ? `${q.score}/${q.total}${q.passed ? " pass" : ""}` : "",
+        assess ? `${assess.score}/${assess.total}${assess.passed ? " pass" : ""}` : "",
+      ].join(","));
+    }
+  }
+  const blob = new Blob([lines.join("\r\n")], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `medicus-onboarding-progress-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast("CSV downloaded");
+}
+
+function csvCell(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+
+// ── View: Settings (admin) ──────────────────────────────────────────────────
+
+function viewSettings() {
+  shell(`
+    <nav class="crumbs"><a href="#/">Dashboard</a> ${icon("chevron-right", 13)} <span>Settings</span></nav>
+    <h1 class="page-title">${icon("settings", 22)} Practice settings</h1>
+
+    <div class="card settings-card">
+      <h3>${icon("briefcase", 16)} Practice</h3>
+      <form class="settings-form" onsubmit="event.preventDefault(); savePracticeName(this)">
+        <label>Practice name <input name="pname" value="${esc(store.practice.name)}" required maxlength="60"></label>
+        <button class="btn btn-ghost btn-sm" type="submit">Save</button>
+      </form>
+      <form class="settings-form" onsubmit="event.preventDefault(); changePasscode(this)">
+        <label>New training-lead passcode <input name="pass1" type="password" minlength="6" required placeholder="At least 6 characters"></label>
+        <label>Confirm <input name="pass2" type="password" minlength="6" required></label>
+        <button class="btn btn-ghost btn-sm" type="submit">Change passcode</button>
+      </form>
+    </div>
+
+    <div class="card settings-card">
+      <h3>${icon("folder", 16)} Storage</h3>
+      <p>${storageMode === "shared"
+        ? `${icon("check-circle", 14)} Progress is saved to the practice's <b>shared data file</b>. Every machine that connects to the same file sees the same team.`
+        : `Progress is currently saved <b>in this browser only</b>. For a whole-practice setup, switch to a shared data file in your shared-drive folder.`}</p>
+      ${supportsSharedMode() ? `
+      <div class="result-actions" style="justify-content:flex-start">
+        ${storageMode !== "shared" ? `
+          <button class="btn btn-primary" onclick="switchToShared(true)">${icon("download", 14)} Create shared data file</button>
+          <button class="btn btn-ghost" onclick="switchToShared(false)">${icon("upload", 14)} Connect to existing file</button>`
+        : `<button class="btn btn-ghost" onclick="switchToShared(false)">${icon("rotate", 14)} Connect to a different file</button>`}
+      </div>
+      <p class="muted small">Save the file as <code>medicus-onboarding-data.json</code> in the same shared folder as this app.
+      On each machine, staff connect once and the browser remembers it.</p>`
+      : `<p class="muted small">Shared files need Edge or Chrome.</p>`}
+    </div>
+
+    <div class="card settings-card">
+      <h3>${icon("alert", 16)} Good to know</h3>
+      <ul class="muted settings-notes">
+        <li>PINs and the passcode deter casual snooping; anyone with access to the shared folder can technically read the data file. Only training progress is stored — never patient data.</li>
+        <li>Two people can use the app at once; progress merges automatically (newest change per person wins).</li>
+        <li>Take an occasional JSON backup from the dashboard — it merges back in cleanly if anything is lost.</li>
+      </ul>
+    </div>`);
+}
+
+function savePracticeName(form) {
+  store.practice.name = form.pname.value.trim();
+  store.practice.updated = Date.now();
+  saveStore();
+  toast("Practice name saved");
+  route();
+}
+
+async function changePasscode(form) {
+  if (form.pass1.value !== form.pass2.value) return toast("Passcodes don't match", "err");
+  store.practice.adminHash = await hashSecret(form.pass1.value);
+  store.practice.updated = Date.now();
+  saveStore();
+  toast("Passcode changed");
+  route();
+}
+
+async function switchToShared(create) {
+  try {
+    await connectSharedFile(create);
+    saveStore();
+    toast(create ? "Shared data file created" : "Connected to shared data file");
+    route();
+  } catch (e) {
+    if (e && e.name !== "AbortError") toast("Couldn't connect: " + e.message, "err");
+  }
 }
 
 // ── View: Person dashboard ──────────────────────────────────────────────────
@@ -329,6 +657,7 @@ function viewPerson(person) {
   const frac = overallProgress(person);
   const assess = person.progress.assessment;
   const allModulesDone = pathway.modules.every((m) => moduleComplete(person, m));
+  const admin = isAdmin();
 
   const moduleCards = pathway.modules.map((mod, i) => {
     const mfrac = moduleProgress(person, mod);
@@ -373,7 +702,7 @@ function viewPerson(person) {
     </div>`;
 
   shell(`
-    <nav class="crumbs"><a href="#/">Team</a> ${icon("chevron-right", 13)} <span>${esc(person.name)}</span></nav>
+    ${admin ? `<nav class="crumbs"><a href="#/">Dashboard</a> ${icon("chevron-right", 13)} <span>${esc(person.name)}</span></nav>` : ""}
     <section class="person-head" style="--accent:${persona.color}">
       <span class="avatar avatar-lg" style="background:${persona.color}">${esc(initials(person.name))}</span>
       <div class="person-head-text">
@@ -385,7 +714,6 @@ function viewPerson(person) {
         ${ring(frac, 76, 7)}
         <div class="person-head-actions">
           <a class="btn btn-ghost btn-sm" href="#/p/${person.id}/record">${icon("printer", 14)} Record</a>
-          <button class="btn btn-ghost btn-sm btn-danger" onclick="removePerson('${person.id}')">${icon("trash", 14)} Remove</button>
         </div>
       </div>
     </section>
@@ -394,17 +722,6 @@ function viewPerson(person) {
         <span class="muted">${pathway.modules.length} modules · complete in order or dip in as needed</span></div>
       <div class="module-list">${moduleCards}${assessmentCard}</div>
     </section>`);
-}
-
-function removePerson(id) {
-  const p = getPerson(id);
-  if (!p) return;
-  if (!confirm(`Remove ${p.name} and all their progress? This cannot be undone.`)) return;
-  delete store.people[id];
-  store.order = store.order.filter((x) => x !== id);
-  saveStore();
-  toast(`${p.name} removed`);
-  nav("");
 }
 
 // ── View: Module ────────────────────────────────────────────────────────────
@@ -443,7 +760,7 @@ function viewModule(person, mod) {
   };
 
   shell(`
-    <nav class="crumbs"><a href="#/">Team</a> ${icon("chevron-right", 13)}
+    <nav class="crumbs"><a href="#/">${isAdmin() ? "Dashboard" : "My pathway"}</a> ${icon("chevron-right", 13)}
       <a href="#/p/${person.id}">${esc(person.name)}</a> ${icon("chevron-right", 13)} <span>${esc(mod.def.title)}</span></nav>
 
     <section class="module-head" style="--accent:${persona.color}">
@@ -523,15 +840,25 @@ function toggleRead(pid, mid, aid) {
   const p = getPerson(pid);
   if (p.progress.read[aid]) delete p.progress.read[aid];
   else p.progress.read[aid] = Date.now();
-  saveStore();
+  touch(p); saveStore();
   route();
+}
+
+// Lessons open the Medicus Help Centre in a new tab; clicking marks them read.
+function markRead(pid, aid) {
+  const p = getPerson(pid);
+  if (!p.progress.read[aid]) {
+    p.progress.read[aid] = Date.now();
+    touch(p); saveStore();
+    setTimeout(route, 100); // refresh after the new tab opens
+  }
 }
 
 function confirmComp(pid, mid, cid) {
   const by = prompt("Witnessed by (supervisor/buddy — optional, leave blank to self-certify):") || "";
   const p = getPerson(pid);
   p.progress.comps[mid + ":" + cid] = { at: Date.now(), by: by.trim() };
-  saveStore();
+  touch(p); saveStore();
   toast("Competency confirmed");
   route();
 }
@@ -539,7 +866,7 @@ function confirmComp(pid, mid, cid) {
 function unconfirmComp(pid, mid, cid) {
   const p = getPerson(pid);
   delete p.progress.comps[mid + ":" + cid];
-  saveStore();
+  touch(p); saveStore();
   route();
 }
 
@@ -550,7 +877,7 @@ function doSignoff(pid, mid, form) {
   const remaining = mod.competencies.filter((c) => !p.progress.comps[mid + ":" + c.id]).length;
   if (remaining > 0 && !confirm(`${remaining} competencies are not yet confirmed. Sign off anyway?`)) return;
   p.progress.signoff[mid] = { name: form.supname.value.trim(), at: Date.now() };
-  saveStore();
+  touch(p); saveStore();
   toast("Module signed off");
   route();
 }
@@ -558,20 +885,8 @@ function doSignoff(pid, mid, form) {
 function clearSignoff(pid, mid) {
   const p = getPerson(pid);
   delete p.progress.signoff[mid];
-  saveStore();
+  touch(p); saveStore();
   route();
-}
-
-// Lessons open the Medicus Help Centre in a new tab (content is not
-// replicated in-app — the articles need their screenshots to make sense).
-// Clicking a lesson link marks it read; the circle toggle can undo.
-function markRead(pid, aid) {
-  const p = getPerson(pid);
-  if (!p.progress.read[aid]) {
-    p.progress.read[aid] = Date.now();
-    saveStore();
-    setTimeout(route, 100); // refresh after the new tab opens
-  }
 }
 
 // ── View: Quiz ──────────────────────────────────────────────────────────────
@@ -594,8 +909,7 @@ function renderQuizStep() {
   const backHref = s.isFinal ? `#/p/${s.pid}` : `#/p/${s.pid}/m/${s.mid}`;
 
   shell(`
-    <nav class="crumbs"><a href="#/">Team</a> ${icon("chevron-right", 13)}
-      <a href="#/p/${s.pid}">${esc(person.name)}</a> ${icon("chevron-right", 13)} <span>${esc(title)}</span></nav>
+    <nav class="crumbs"><a href="#/p/${s.pid}">${esc(person.name)}</a> ${icon("chevron-right", 13)} <span>${esc(title)}</span></nav>
     <div class="quiz">
       <div class="quiz-progress">
         <span>Question ${s.index + 1} of ${s.questions.length}</span>
@@ -652,7 +966,7 @@ function finishQuiz() {
   const result = { score: s.score, total, passed, at: Date.now() };
   if (s.isFinal) person.progress.assessment = result;
   else person.progress.quiz[s.mid] = result;
-  saveStore();
+  touch(person); saveStore();
 
   const backHref = s.isFinal ? `#/p/${s.pid}` : `#/p/${s.pid}/m/${s.mid}`;
   shell(`
@@ -677,7 +991,6 @@ function finishQuiz() {
 let wtSession = null;
 
 function viewWalkthroughLaunch(person, mod) {
-  // direct URL → bounce to module and open player
   nav(`p/${person.id}/m/${mod.id}`);
   if (mod.def.walkthrough) startWalkthrough(person.id, mod.id, mod.def.walkthrough);
 }
@@ -716,7 +1029,6 @@ function renderWtStep() {
   if (hot) {
     hot.classList.add("wt-hot");
     hot.addEventListener("click", (e) => { e.stopPropagation(); advanceWt(); });
-    // coach mark
     const tip = document.createElement("div");
     tip.className = "wt-tip";
     tip.innerHTML = `<b>${step.tip.title}</b><p>${step.tip.body}</p>
@@ -724,7 +1036,6 @@ function renderWtStep() {
     overlay.appendChild(tip);
     positionTip(tip, hot, overlay);
   }
-  // wrong-click hint
   overlay.querySelector(".wt-stage").addEventListener("click", () => {
     const h = overlay.querySelector(".wt-hot");
     if (h) { h.classList.remove("wt-nudge"); void h.offsetWidth; h.classList.add("wt-nudge"); }
@@ -762,7 +1073,7 @@ function finishWalkthrough() {
   const person = getPerson(s.pid);
   const first = !person.progress.wt[s.wid];
   person.progress.wt[s.wid] = Date.now();
-  saveStore();
+  touch(person); saveStore();
   const overlay = document.getElementById("wt-overlay");
   overlay.innerHTML = `
     <div class="wt-chrome"><span class="wt-title">${icon("mouse", 16)} ${esc(wt.title)}</span>
@@ -823,8 +1134,7 @@ function viewRecord(person) {
   }).join("");
 
   shell(`
-    <nav class="crumbs no-print"><a href="#/">Team</a> ${icon("chevron-right", 13)}
-      <a href="#/p/${person.id}">${esc(person.name)}</a> ${icon("chevron-right", 13)} <span>Competency record</span></nav>
+    <nav class="crumbs no-print"><a href="#/p/${person.id}">${esc(person.name)}</a> ${icon("chevron-right", 13)} <span>Competency record</span></nav>
     <div class="no-print rec-toolbar">
       <button class="btn btn-primary" onclick="window.print()">${icon("printer", 15)} Print / save as PDF</button>
       <span class="muted">A4 portrait recommended · this page is print-formatted</span>
@@ -836,6 +1146,7 @@ function viewRecord(person) {
           <h1>Competency Record</h1>
         </div>
         <table class="rec-meta">
+          <tr><th>Practice</th><td>${esc(store.practice.name)}</td></tr>
           <tr><th>Name</th><td>${esc(person.name)}</td></tr>
           <tr><th>Role</th><td>${esc(persona.title)}</td></tr>
           <tr><th>Started</th><td>${fmtDate(person.created)}</td></tr>
@@ -850,8 +1161,7 @@ function viewRecord(person) {
         <div class="rec-sig"><span class="rec-line"></span>Training lead signature & date</div>
       </footer>
       <p class="rec-smallprint">Generated by the practice Medicus onboarding tool. Lesson content derives from the
-      Medicus Help Centre (medicus-health.zendesk.com). Competency confirmations are self- or witness-declared and
-      stored locally in the practice browser.</p>
+      Medicus Help Centre (medicus-health.zendesk.com). Competency confirmations are self- or witness-declared.</p>
     </article>`);
   document.body.classList.add("print-mode");
 }
@@ -896,18 +1206,22 @@ function viewSearch(query) {
 // ── Boot ────────────────────────────────────────────────────────────────────
 
 window.addEventListener("hashchange", route);
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   if (!window.ARTICLES || !window.MODULES) {
     document.getElementById("app").innerHTML =
       '<div class="boot-error">Could not load training data — data/data.js missing. Run scripts/build_data.py.</div>';
     return;
   }
+  await initStorage();
   route();
 });
 
 // expose handlers used in inline HTML
 Object.assign(window, {
-  nav, addPersonSubmit, prefillRole, exportProgress, importProgress, removePerson,
+  nav, route, toast, addPersonSubmit, exportProgress, importProgress, exportCsv, removePerson, resetPin,
   toggleRead, confirmComp, unconfirmComp, doSignoff, clearSignoff, markRead,
   answerQuiz, nextQuiz, finishQuiz, startWalkthrough, closeWalkthrough, renderWtStep,
+  viewLogin, userLogin, setPinAndLogin, adminLogin, logout, submitSetup,
+  doReconnect, pickDifferentFile, savePracticeName, changePasscode, switchToShared,
+  mergeStores,
 });
